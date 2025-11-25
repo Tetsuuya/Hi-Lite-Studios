@@ -6,7 +6,7 @@ import Subtract from '@/assets/images/Subtract.png';
 
 const About = () => {
   return (
-    <section className="relative w-full min-h-screen bg-white overflow-hidden pb-16">
+    <section className="relative w-full bg-white overflow-hidden">
       {/* Top Accent Border */}
       <div className="w-screen relative flex justify-center pt-6 pb-4 z-20">
         <img
@@ -16,7 +16,7 @@ const About = () => {
         />
       </div>
 
-      {/* Background Layer with Content inside */}
+      {/* Background Layer */}
       <div className="relative w-full h-[400px] mx-auto">
         {/* Background image */}
         <img
@@ -69,8 +69,8 @@ const About = () => {
         </div>
       </div>
 
-      {/* Bottom Accent Border (outside content wrapper) */}
-      <div className="w-screen relative pt-14 z-20">
+      {/* Bottom Accent Border */}
+      <div className="w-screen relative pt-4 pb-6 z-20">
         <img
           src={BlueBorder}
           alt="Bottom blue border"

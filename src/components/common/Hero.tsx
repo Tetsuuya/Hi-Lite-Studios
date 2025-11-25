@@ -4,20 +4,20 @@ import ChatbotButton from '@/assets/images/Chatbot Button.png';
 
 const Hero = () => {
   return (
-    <section className="relative w-full bg-white overflow-hidden pt-4 pb-16">
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 md:flex-row md:items-start">
+    <section className="relative w-full bg-white overflow-hidden pt-4 pb-10">
+      <div className="relative mx-auto flex w-full max-w-[1500px] flex-col gap-8 px-2 md:flex-row md:items-start md:px-4">
         {/* Left Side */}
-        <div className="relative flex w-full flex-col justify-start px-6 md:w-1/2 md:px-8">
+        <div className="relative flex w-full flex-col justify-start pl-0 pr-2 md:w-1/2 md:px-0">
           <img
             src={Intersect}
             alt="Abstract geometric graphic"
-            className="absolute -left-14 w-1/2 max-w-[300px] object-contain"
+            className="absolute -left-6 w-1/2 max-w-[250px] object-contain"
           />
 
           {/* Foreground Text */}
-          <div className="relative z-10 mb-6 mt-10 pl-10">
+          <div className="relative z-10 mb-6 mt-8 pl-6 md:pl-20">
             <p className="mb-2 text-2xl font-medium text-black">Welcome,</p>
-            <h1 className="text-6xl font-black bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent md:text-7xl">
+            <h1 className="text-9xl font-black bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent md:text-7xl">
               <span className="block">This is Hi-</span>
               <span className="block">Lite Studio.</span>
             </h1>
@@ -46,7 +46,7 @@ const Hero = () => {
               Create moments
             </div>
 
-            <div className="absolute left-1/3 bottom-0 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-4 py-2.5 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(242,50,46,0.6)]">
+            <div className="absolute left-40 bottom-0 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-4 py-2.5 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(242,50,46,0.6)]">
               Make your memories
             </div>
 
@@ -62,7 +62,7 @@ const Hero = () => {
 
         {/* Right Side */}
         <div className="relative flex w-full justify-center md:w-1/2">
-          <div className="w-full max-w-lg px-6 md:px-0">
+          <div className="w-full max-w-lg px-2 md:px-0">
             <img
               src={Logo}
               alt="Hi-Lite Studio Logo"
