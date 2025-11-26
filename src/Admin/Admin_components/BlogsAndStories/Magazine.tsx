@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import type { BlogStory } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
 import {
   fetchAllBlogStoriesForAdmin,
+  fetchBlogStoryById,
   createBlogStory,
   updateBlogStory,
   deleteBlogStory,
@@ -86,18 +87,42 @@ export default function MagazineAdmin() {
     setMode('create')
   }
 
-  const handleEditStory = (story: BlogStory) => {
-    setSelectedStory(story)
-    setForm({
-      title: story.title,
-      slug: story.slug,
-      cover_image: story.cover_image ?? '',
-      excerpt: story.excerpt ?? '',
-      content: story.content,
-      is_pinned: story.is_pinned,
-      status: story.status,
-    })
-    setMode('edit')
+  const handleEditStory = async (story: BlogStory) => {
+    // If content is empty (from lightweight query), fetch full content
+    if (!story.content) {
+      setLoading(true)
+      try {
+        const fullStory = await fetchBlogStoryById(story.id)
+        setSelectedStory(fullStory)
+        setForm({
+          title: fullStory.title,
+          slug: fullStory.slug,
+          cover_image: fullStory.cover_image ?? '',
+          excerpt: fullStory.excerpt ?? '',
+          content: fullStory.content,
+          is_pinned: fullStory.is_pinned,
+          status: fullStory.status,
+        })
+        setMode('edit')
+      } catch (err: any) {
+        setError(err.message ?? 'Failed to load story')
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      // Content already available
+      setSelectedStory(story)
+      setForm({
+        title: story.title,
+        slug: story.slug,
+        cover_image: story.cover_image ?? '',
+        excerpt: story.excerpt ?? '',
+        content: story.content,
+        is_pinned: story.is_pinned,
+        status: story.status,
+      })
+      setMode('edit')
+    }
   }
 
   const handleDeleteStory = async (story: BlogStory) => {

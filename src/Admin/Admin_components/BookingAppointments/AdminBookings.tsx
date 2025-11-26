@@ -220,14 +220,35 @@ export default function AdminBookings() {
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
               {loading && !bookings.length ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-8 text-center text-sm text-gray-500"
-                  >
-                    Loading bookings...
-                  </td>
-                </tr>
+                // Skeleton loaders for table rows
+                Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={`skeleton-${index}`} className="animate-pulse">
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-4 rounded border border-gray-300 bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-20 rounded bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-32 rounded bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-24 rounded bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-24 rounded bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-40 rounded bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="h-7 w-20 rounded-md bg-gray-200" />
+                        <div className="h-7 w-20 rounded-md bg-gray-200" />
+                      </div>
+                    </td>
+                  </tr>
+                ))
               ) : bookings.length === 0 ? (
                 <tr>
                   <td

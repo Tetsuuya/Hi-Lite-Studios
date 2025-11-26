@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 import {
   fetchPublishedBlogStories,
   createBlogStory,
@@ -43,7 +43,7 @@ export function MagazineProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const loadItems = async () => {
+  const loadItems = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -55,11 +55,11 @@ export function MagazineProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [loadItems])
 
   const addItem: MagazineContextValue['addItem'] = async (input) => {
     try {
