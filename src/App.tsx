@@ -4,7 +4,6 @@ import Home from './pages/Home';
 import RecentWorks from './pages/RecentWorks';
 import Service from './pages/Service';
 import Magazine from './pages/Magazine';
-import About from './pages/About';
 import FAQ from './pages/FAQ';
 import Capture from './pages/Capture';
 
@@ -19,7 +18,6 @@ function App() {
             <Route path="/works" element={<RecentWorks />} />
             <Route path="/services" element={<Service />} />
             <Route path="/magazine" element={<Magazine />} />
-            <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/capture" element={<Capture />} />
           </Routes>
