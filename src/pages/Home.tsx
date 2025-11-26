@@ -4,6 +4,7 @@ import AboutSection from '../components/sections/AboutSection';
 import WorksSection from '../components/sections/WorksSection';
 import ServicesSection from '../components/sections/ServicesSection';
 import MagazineSection from '../components/sections/MagazineSection';
+import FAQSection from '../components/sections/FAQSection';
 
 const Home = () => {
   return (
@@ -32,6 +33,11 @@ const Home = () => {
       <section id="magazine-section">
         <MagazineSection />
       </section>
+
+      <section id="faq-section">
+              <FAQSection />
+      </section>
+      
     </div>
   );
 };

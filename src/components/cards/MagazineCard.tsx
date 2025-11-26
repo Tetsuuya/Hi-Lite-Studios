@@ -17,7 +17,7 @@ const MagazineCard = ({ title, image, excerpt, onClick }: MagazineCardProps) => 
       </div>
       <div className="flex flex-1 flex-col gap-2 px-6 py-5">
         <h3 className="text-2xl font-semibold text-[#333333] line-clamp-2">{title}</h3>
-        <p className="text-m text-[#555555] line-clamp-3">{excerpt}</p>
+        <p className="text-sm text-[#555555] line-clamp-3">{excerpt}</p>
       </div>
     </button>
   )

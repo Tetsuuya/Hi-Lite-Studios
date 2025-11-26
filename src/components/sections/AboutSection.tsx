@@ -8,7 +8,7 @@ const AboutSection = () => {
   return (
     <section id="about" className="relative w-full bg-white overflow-hidden">
       {/* Top Accent Border */}
-      <div className="w-screen relative flex justify-center pt-6 pb-4 z-20">
+      <div className="w-screen relative flex justify-center pt-6 pb-4 z-20 left-1/2 -translate-x-1/2">
         <img
           src={BlueBorder}
           alt="Top blue border"
@@ -70,7 +70,7 @@ const AboutSection = () => {
       </div>
 
       {/* Bottom Accent Border */}
-      <div className="w-screen relative pt-4 pb-6 z-20">
+      <div className="w-screen relative pt-4 pb-6 z-20 left-1/2 -translate-x-1/2">
         <img
           src={BlueBorder}
           alt="Bottom blue border"

@@ -18,6 +18,7 @@ import BlogsStories from './admin/AdminComponents/AdminBlog';
 import AdminBookings from './admin/AdminComponents/AdminBookings';
 import AdminContent from './admin/AdminComponents/AdminContent';
 import RequireAuth from './routes/RequireAuth';
+import AdminFAQ from './admin/AdminComponents/AdminFAQ';
 
 // Public layout wrapper
 function PublicLayout() {
@@ -58,6 +59,7 @@ function App() {
             <Route path="bookings" element={<AdminBookings />} />
             <Route path="content" element={<AdminContent />} />
             <Route path="stories" element={<BlogsStories />} />
+                      <Route path="faq" element={<AdminFAQ />} />
           </Route>
         </Route>
 
