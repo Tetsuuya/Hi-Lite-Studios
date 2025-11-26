@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { Booking, BookingStatus } from '@/supabase/supabase_services/bookings'
+import type { Booking, BookingStatus } from '@/supabase/supabase_services/admin_boooking/bookings'
 import {
   fetchBookingsByStatus,
   updateBookingStatus,
   updateManyBookingStatus,
-} from '@/supabase/supabase_services/bookings'
+} from '@/supabase/supabase_services/admin_boooking/bookings'
 
 type Tab = BookingStatus | 'available-dates'
 

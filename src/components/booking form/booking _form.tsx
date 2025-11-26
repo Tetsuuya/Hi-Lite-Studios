@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Calendar } from '@/components/ui/calendar'
-import { createBooking } from '@/supabase/supabase_services/bookings'
+import { createBooking } from '@/supabase/supabase_services/admin_boooking/bookings'
 
 const INQUIRY_TYPES = [
   { value: 'indoor_studio_photography', label: 'Indoor & Studio Photography' },

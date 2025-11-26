@@ -14,9 +14,9 @@ import Appointment from './pages/Appointment';
 // Admin pages
 import LoginForAdmin from './Admin/AdminLogin';
 import AdminMain from './Admin/AdminMain';
-import BlogsStories from './Admin/Admin_components/AdminBlog';
-import AdminBookings from './Admin/Admin_components/AdminBookings';
-import AdminContent from './Admin/Admin_components/AdminContent';
+import BlogsStories from './Admin/Admin_components/BlogsAndStories/Magazine';
+import AdminBookings from './Admin/Admin_components/BookingAppointments/AdminBookings';
+import AdminContent from './Admin/Admin_components/ContentManagement/AboutUS';
 import RequireAuth from './routes/RequireAuth';
 
 // Public layout wrapper

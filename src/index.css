@@ -1,9 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
+/* Design tokens mapped as CSS custom properties at the root level */
+:root {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -39,9 +38,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-}
 
-:root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -117,12 +114,25 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    /* Replaces Tailwind @apply border-border outline-ring/50; to avoid unknownAtRules lint error */
+    border-color: var(--border);
+    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
   }
   body {
-    @apply bg-background text-foreground;
+    /* Replaces Tailwind @apply bg-background text-foreground; to avoid unknownAtRules lint error */
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: 'Google Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
+}
+
+/* Quill editor content images - responsive and a bit smaller than full width */
+.ql-editor img {
+  max-width: 20%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @keyframes stripMove {
@@ -166,6 +176,9 @@
   animation: sweepBorder 15s ease-out forwards;
   background-size: 200% 200%;
   -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;

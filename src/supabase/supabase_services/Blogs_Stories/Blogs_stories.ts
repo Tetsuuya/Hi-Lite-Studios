@@ -1,0 +1,166 @@
+import { supabase } from '@/supabase/client'
+
+export type BlogStatus = 'draft' | 'published' | 'archived'
+
+export interface BlogStory {
+  id: number
+  title: string
+  slug: string
+  cover_image: string | null
+  excerpt: string | null
+  content: string
+  is_pinned: boolean
+  status: BlogStatus
+  created_at: string
+  updated_at: string
+}
+
+const TABLE_NAME = 'blogs_stories'
+
+export interface NewBlogStoryInput {
+  title: string
+  slug: string
+  cover_image?: string | null
+  excerpt?: string | null
+  content: string
+  is_pinned?: boolean
+  status?: BlogStatus
+}
+
+export interface UpdateBlogStoryInput {
+  title?: string
+  slug?: string
+  cover_image?: string | null
+  excerpt?: string | null
+  content?: string
+  is_pinned?: boolean
+  status?: BlogStatus
+}
+
+const BUCKET_NAME = 'blog-images'
+
+export async function createBlogStory(input: NewBlogStoryInput) {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .insert({
+      title: input.title,
+      slug: input.slug,
+      cover_image: input.cover_image ?? null,
+      excerpt: input.excerpt ?? null,
+      content: input.content,
+      is_pinned: input.is_pinned ?? false,
+      status: input.status ?? 'draft',
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as BlogStory
+}
+
+export async function fetchAllBlogStoriesForAdmin() {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .select('*')
+    .order('is_pinned', { ascending: false })
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []) as BlogStory[]
+}
+
+export async function fetchPublishedBlogStories() {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .select('*')
+    .eq('status', 'published')
+    .order('is_pinned', { ascending: false })
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []) as BlogStory[]
+}
+
+export async function fetchBlogStoryById(id: number) {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) throw error
+  return data as BlogStory
+}
+
+export async function updateBlogStory(id: number, updates: UpdateBlogStoryInput) {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as BlogStory
+}
+
+export async function deleteBlogStory(id: number) {
+  const { error } = await supabase.from(TABLE_NAME).delete().eq('id', id)
+  if (error) throw error
+}
+
+export async function pinBlogStory(id: number) {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .update({ is_pinned: true })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as BlogStory
+}
+
+export async function unpinBlogStory(id: number) {
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .update({ is_pinned: false })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as BlogStory
+}
+
+export async function uploadBlogImage(
+  file: File,
+  folder: 'covers' | 'body' = 'covers',
+) {
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${
+    fileExt || 'jpg'
+  }`
+  const filePath = `${folder}/${fileName}`
+
+  const { error: uploadError } = await supabase.storage
+    .from(BUCKET_NAME)
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+    })
+
+  if (uploadError) throw uploadError
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath)
+
+  return {
+    path: filePath,
+    publicUrl,
+  }
+}
+
+
+
