@@ -18,8 +18,7 @@ import BlogsStories from './Admin/Admin_components/BlogsAndStories/Magazine';
 import AdminBookings from './Admin/Admin_components/BookingAppointments/AdminBookings';
 import AdminContent from './Admin/Admin_components/ContentManagement/AboutUS';
 import RequireAuth from './routes/RequireAuth';
-import AdminFAQ from './Admin/AdminComponents/AdminFAQ';
-
+import AdminFAQ from './Admin/Admin_components/AdminFAQ';
 // Public layout wrapper
 function PublicLayout() {
   return (
