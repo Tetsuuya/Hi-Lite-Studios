@@ -9,7 +9,6 @@ const navItems = [
   { label: 'Booking Appointments', path: '/admin/bookings' },
   { label: 'Content Management', path: '/admin/content' },
   { label: 'Blogs and Stories', path: '/admin/stories' },
-  { label: 'FAQ', path: '/admin/faq' },
 ]
 
 export default function AdminSidebar({

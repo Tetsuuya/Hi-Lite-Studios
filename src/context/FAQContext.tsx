@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-import { fetchAllFAQs, createFAQ, updateFAQ, deleteFAQ } from '@/supabase/supabase_services/FAQs/faqs'
+import { fetchAllFAQs, createFAQ, updateFAQ, deleteFAQ } from '@/supabase/supabase_services/Content_Management/FAQs/faqs'
 
 export type FAQItem = {
   id: string
