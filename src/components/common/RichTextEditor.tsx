@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useCallback, memo } from 'react'
 import { useQuill } from 'react-quilljs'
 import 'quill/dist/quill.snow.css'
 
@@ -26,26 +26,47 @@ const formats = [
   'image',
 ]
 
-export default function RichTextEditor({ value, onChange }: RichTextEditorProps) {
+function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   const { quill, quillRef } = useQuill({
     modules,
     formats,
     theme: 'snow',
   })
 
-  // Load initial / external value into editor
+  const isInitializingRef = useRef(false)
+  const lastValueRef = useRef('')
+
+  // Load initial / external value into editor (only once at start and when explicitly changed from outside)
   useEffect(() => {
     if (!quill) return
-    if (value === quill.root.innerHTML) return
-    quill.clipboard.dangerouslyPasteHTML(value || '')
+    
+    // Skip if already initializing
+    if (isInitializingRef.current) return
+    
+    // Skip if value hasn't changed (prevents re-pasting on every parent re-render)
+    if (value === lastValueRef.current) return
+    
+    // Mark as initializing to prevent rapid re-pastes
+    isInitializingRef.current = true
+    lastValueRef.current = value
+    
+    // Use setTimeout to batch the paste operation
+    const timer = setTimeout(() => {
+      quill.clipboard.dangerouslyPasteHTML(value || '')
+      isInitializingRef.current = false
+    }, 0)
+    
+    return () => clearTimeout(timer)
   }, [quill, value])
 
-  // Propagate changes out
+  // Propagate changes out with debouncing to prevent excessive re-renders
   useEffect(() => {
     if (!quill) return
 
     const handler = () => {
-      onChange(quill.root.innerHTML)
+      const newContent = quill.root.innerHTML
+      lastValueRef.current = newContent
+      onChange(newContent)
     }
 
     quill.on('text-change', handler)
@@ -56,3 +77,5 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
 
   return <div ref={quillRef} />
 }
+
+export default memo(RichTextEditor)
