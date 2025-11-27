@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Booking, BookingStatus } from '@/supabase/supabase_services/admin_boooking/bookings'
 import BookingRow from './BookingRow'
 
@@ -12,7 +13,7 @@ export interface BookingsTableProps {
   renderStatusBadge: (status: BookingStatus) => React.ReactNode
 }
 
-export default function BookingsTable({
+export default memo(function BookingsTable({
   bookings,
   selectedIds,
   loading = false,
@@ -120,15 +121,6 @@ export default function BookingsTable({
           </tbody>
         </table>
       </div>
-
-      {bookings.length > 0 && (
-        <div className="flex items-center justify-between pt-4 text-xs text-gray-500">
-          <span>
-            Showing <strong>{bookings.length}</strong> booking
-            {bookings.length !== 1 && 's'}
-          </span>
-        </div>
-      )}
     </div>
   )
-}
+})

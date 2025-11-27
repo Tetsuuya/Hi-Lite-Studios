@@ -1,8 +1,8 @@
+import { memo, type ChangeEvent } from 'react'
 import RichTextEditor from '@/components/common/RichTextEditor'
 import type {
   BlogStatus,
 } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
-import type { ChangeEvent } from 'react'
 
 export type Mode = 'list' | 'edit' | 'create'
 
@@ -34,7 +34,7 @@ interface BlogEditorViewProps {
   onDeleteCurrent?: () => Promise<void> | void
 }
 
-export default function BlogEditorView({
+export default memo(function BlogEditorView({
   mode,
   form,
   saving,
@@ -188,6 +188,6 @@ export default function BlogEditorView({
       </div>
     </div>
   )
-}
+})
 
 

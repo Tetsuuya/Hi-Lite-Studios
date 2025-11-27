@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { BlogStory } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
 
 interface BlogListViewProps {
@@ -13,23 +14,23 @@ interface BlogListViewProps {
   onPinToggle: (story: BlogStory) => Promise<void>
 }
 
-export default function BlogListView({
-  stories,
-  pinnedStories,
-  otherStories,
-  loading,
+interface StoryCardProps {
+  story: BlogStory
+  saving: boolean
+  onEdit: (story: BlogStory) => void
+  onDelete: (story: BlogStory) => Promise<void>
+  onPinToggle: (story: BlogStory) => Promise<void>
+}
+
+const StoryCard = memo(function StoryCard({
+  story,
   saving,
-  error,
-  onNewStory,
-  onEditStory,
-  onDeleteStory,
+  onEdit,
+  onDelete,
   onPinToggle,
-}: BlogListViewProps) {
-  const renderStoryCard = (story: BlogStory) => (
-    <article
-      key={story.id}
-      className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
-    >
+}: StoryCardProps) {
+  return (
+    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="p-4">
         <div className="relative w-full bg-gray-100 overflow-hidden rounded-lg" style={{ aspectRatio: '4/3' }}>
           {story.cover_image ? (
@@ -92,14 +93,14 @@ export default function BlogListView({
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => onEditStory(story)}
+              onClick={() => onEdit(story)}
               className="rounded-full bg-[#291471] px-4 py-1 text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-[#1e0f55]"
             >
               Edit
             </button>
             <button
               type="button"
-              onClick={() => onDeleteStory(story)}
+              onClick={() => onDelete(story)}
               disabled={saving}
               className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-600 shadow-sm hover:bg-gray-200 disabled:cursor-not-allowed"
             >
@@ -110,7 +111,20 @@ export default function BlogListView({
       </div>
     </article>
   )
+})
 
+export default memo(function BlogListView({
+  stories,
+  pinnedStories,
+  otherStories,
+  loading,
+  saving,
+  error,
+  onNewStory,
+  onEditStory,
+  onDeleteStory,
+  onPinToggle,
+}: BlogListViewProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
@@ -174,12 +188,29 @@ export default function BlogListView({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {pinnedStories.map(renderStoryCard)}
-          {otherStories.map(renderStoryCard)}
+          {pinnedStories.map((story) => (
+            <StoryCard
+              key={story.id}
+              story={story}
+              saving={saving}
+              onEdit={onEditStory}
+              onDelete={onDeleteStory}
+              onPinToggle={onPinToggle}
+            />
+          ))}
+          {otherStories.map((story) => (
+            <StoryCard
+              key={story.id}
+              story={story}
+              saving={saving}
+              onEdit={onEditStory}
+              onDelete={onDeleteStory}
+              onPinToggle={onPinToggle}
+            />
+          ))}
         </div>
       )}
     </div>
   )
-}
-
+})
 

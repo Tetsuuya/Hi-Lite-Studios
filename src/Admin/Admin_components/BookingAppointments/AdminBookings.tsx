@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import type { BookingStatus } from '@/supabase/supabase_services/admin_boooking/bookings'
 import PendingIcon from '../../../assets/images/Adminbuttons/bookings_buttons/Pending_Button.png'
 import ConfirmedIcon from '../../../assets/images/Adminbuttons/bookings_buttons/ConfirmedButton.png'
@@ -31,33 +31,41 @@ export default function AdminBookings() {
   // Use custom hook for all booking logic
   const { bookings, loading, error, updateStatus, updateManyStatus } = useBookings({ activeTab })
 
-  const toggleSelectAll = () => {
+  const toggleSelectAll = useCallback(() => {
     const allSelected = bookings.length > 0 && selectedIds.length === bookings.length
     if (allSelected) {
       setSelectedIds([])
     } else {
       setSelectedIds(bookings.map((b) => b.id))
     }
-  }
+  }, [bookings, selectedIds.length])
 
-  const toggleSelect = (id: number) => {
+  const toggleSelect = useCallback((id: number) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     )
-  }
+  }, [])
 
-  const handleStatusChange = (id: number, status: BookingStatus) => {
+  const handleStatusChange = useCallback((id: number, status: BookingStatus) => {
     updateStatus(id, status)
     setSelectedIds((prev) => prev.filter((x) => x !== id))
-  }
+  }, [updateStatus])
 
-  const handleBulkStatusChange = (status: BookingStatus) => {
+  const handleBulkStatusChange = useCallback((status: BookingStatus) => {
     if (!selectedIds.length) return
     updateManyStatus(selectedIds, status)
     setSelectedIds([])
-  }
+  }, [selectedIds, updateManyStatus])
 
-  const renderStatusBadge = (status: BookingStatus) => {
+  const handleApproveSelected = useCallback(() => {
+    handleBulkStatusChange('confirmed')
+  }, [handleBulkStatusChange])
+
+  const handleDeclineSelected = useCallback(() => {
+    handleBulkStatusChange('declined')
+  }, [handleBulkStatusChange])
+
+  const renderStatusBadge = useCallback((status: BookingStatus) => {
     const colors: Record<BookingStatus, string> = {
       pending: 'bg-yellow-100 text-yellow-800',
       confirmed: 'bg-green-100 text-green-800',
@@ -72,7 +80,7 @@ export default function AdminBookings() {
         {status}
       </span>
     )
-  }
+  }, [])
 
   const renderAvailableDates = () => (
     <div className="mt-8 rounded-xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-600">
@@ -123,8 +131,8 @@ export default function AdminBookings() {
           <BookingsHeader
             selectedCount={selectedIds.length}
             loading={loading}
-            onApproveSelected={() => handleBulkStatusChange('confirmed')}
-            onDeclineSelected={() => handleBulkStatusChange('declined')}
+            onApproveSelected={handleApproveSelected}
+            onDeclineSelected={handleDeclineSelected}
           />
         )}
       </div>

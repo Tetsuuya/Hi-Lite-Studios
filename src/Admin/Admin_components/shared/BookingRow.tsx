@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Booking, BookingStatus } from '@/supabase/supabase_services/admin_boooking/bookings'
 
 export interface BookingRowProps {
@@ -9,7 +10,7 @@ export interface BookingRowProps {
   renderStatusBadge: (status: BookingStatus) => React.ReactNode
 }
 
-export default function BookingRow({
+export default memo(function BookingRow({
   booking,
   isSelected,
   loading = false,
@@ -98,4 +99,4 @@ export default function BookingRow({
       </td>
     </tr>
   )
-}
+})

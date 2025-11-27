@@ -45,10 +45,11 @@ export interface UpdateWorkInput {
   date?: string | null
 }
 
+// Lightweight query for list views - only fetch needed fields
 export async function fetchAllWorks() {
   const { data, error } = await supabase
     .from(TABLE_NAME)
-    .select('*')
+    .select('id, main_image_url, description, label_1, label_2, date, created_at, updated_at')
     .order('date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
 

@@ -20,10 +20,11 @@ export interface UpdateFAQInput {
   answer?: string
 }
 
+// Optimized query - only fetch needed fields for list view
 export async function fetchAllFAQs() {
   const { data, error } = await supabase
     .from(TABLE_NAME)
-    .select('*')
+    .select('id, question, answer, created_at, updated_at')
     .order('created_at', { ascending: false })
 
   if (error) throw error

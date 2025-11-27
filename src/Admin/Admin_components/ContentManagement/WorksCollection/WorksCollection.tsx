@@ -42,11 +42,8 @@ export default function WorksCollection() {
     loadWorks()
   }, [])
 
-  useEffect(() => {
-    if (selectedWorkId) {
-      loadWorkMedia(selectedWorkId)
-    }
-  }, [selectedWorkId])
+  // Don't use separate effect for selectedWorkId - handle in handler instead
+  // This was causing double fetching on edit
 
   const loadWorks = async () => {
     setLoading(true)
@@ -89,7 +86,13 @@ export default function WorksCollection() {
       label_1: (work.label_1 as WorkLabel) || '',
       date: work.date ? new Date(work.date) : null,
     })
-    await loadWorkMedia(work.id)
+    // Load media immediately here instead of waiting for useEffect
+    try {
+      const workWithMedia = await fetchWorkWithMedia(work.id)
+      setSelectedWorkMedia(workWithMedia.media || [])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load media')
+    }
     setMode('edit')
     setError(null)
   }

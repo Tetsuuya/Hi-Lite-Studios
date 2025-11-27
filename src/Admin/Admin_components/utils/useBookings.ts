@@ -49,26 +49,28 @@ export function useBookings({ activeTab }: UseBookingsOptions) {
 
   const updateStatus = async (id: number, status: BookingStatus) => {
     try {
-      setLoading(true)
-      await updateBookingStatus(id, status)
+      // Remove from UI immediately (optimistic update)
       setBookings((prev) => prev.filter((b) => b.id !== id))
+      
+      // Update in background without blocking UI
+      await updateBookingStatus(id, status)
     } catch (err: any) {
       setError(err.message ?? 'Failed to update booking')
-    } finally {
-      setLoading(false)
+      // Optionally reload on error to sync state
     }
   }
 
   const updateManyStatus = async (ids: number[], status: BookingStatus) => {
     if (!ids.length) return
     try {
-      setLoading(true)
-      await updateManyBookingStatus(ids, status)
+      // Remove from UI immediately (optimistic update)
       setBookings((prev) => prev.filter((b) => !ids.includes(b.id)))
+      
+      // Update in background without blocking UI
+      await updateManyBookingStatus(ids, status)
     } catch (err: any) {
       setError(err.message ?? 'Failed to update selected bookings')
-    } finally {
-      setLoading(false)
+      // Optionally reload on error to sync state
     }
   }
 
