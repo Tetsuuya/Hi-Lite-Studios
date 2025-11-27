@@ -7,8 +7,6 @@ interface WorksListViewProps {
   error: string | null
   onNewWork: () => void
   onEditWork: (work: Work) => void
-  onDeleteWork: (work: Work) => Promise<void>
-  submitting?: boolean
 }
 
 export default function WorksListView({
@@ -17,8 +15,6 @@ export default function WorksListView({
   error,
   onNewWork,
   onEditWork,
-  onDeleteWork,
-  submitting = false,
 }: WorksListViewProps) {
   return (
     <div className="space-y-6">
@@ -80,8 +76,6 @@ export default function WorksListView({
               key={work.id}
               work={work}
               onEdit={onEditWork}
-              onDelete={onDeleteWork}
-              submitting={submitting}
             />
           ))}
         </div>

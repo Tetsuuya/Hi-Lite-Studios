@@ -3,11 +3,9 @@ import type { Work } from '@/supabase/supabase_services/Content_Management/Works
 interface WorkCardProps {
   work: Work
   onEdit: (work: Work) => void
-  onDelete: (work: Work) => void
-  submitting?: boolean
 }
 
-export default function WorkCard({ work, onEdit, onDelete, submitting = false }: WorkCardProps) {
+export default function WorkCard({ work, onEdit }: WorkCardProps) {
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="relative w-full bg-gray-100 flex items-center justify-center overflow-hidden" style={{ aspectRatio: '1 / 1' }}>

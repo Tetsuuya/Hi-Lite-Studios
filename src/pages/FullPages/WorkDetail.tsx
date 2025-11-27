@@ -19,8 +19,8 @@ const WorkDetail = () => {
 
   const MAX_DESCRIPTION_LENGTH = 150
   const shouldTruncate = work?.description && work.description.length > MAX_DESCRIPTION_LENGTH
-  const displayDescription = !expandedDescription && shouldTruncate 
-    ? work!.description.substring(0, MAX_DESCRIPTION_LENGTH).trim() + '...' 
+  const displayDescription = !expandedDescription && shouldTruncate && work?.description
+    ? work.description.substring(0, MAX_DESCRIPTION_LENGTH).trim() + '...' 
     : work?.description
 
   if (loading) {
@@ -56,6 +56,8 @@ const WorkDetail = () => {
       </div>
     )
   }
+
+  if (!work) return null
 
   return (
     <div className="min-h-screen bg-white">

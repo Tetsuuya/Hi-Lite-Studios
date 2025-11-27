@@ -2,12 +2,9 @@ import type { ChangeEvent } from 'react'
 import { Calendar } from '@/components/ui/calendar'
 import { ImageUploadField, MediaGallery, MediaUploadField } from '../../shared'
 import { WORK_LABEL_OPTIONS } from '../../../../utils'
-import type { Work, WorkLabel, WorkMedia } from '@/supabase/supabase_services/Content_Management/WorksCollection_Service/WorksCollection'
-
-type Mode = 'create' | 'edit'
+import type { WorkLabel, WorkMedia } from '@/supabase/supabase_services/Content_Management/WorksCollection_Service/WorksCollection'
 
 interface WorksEditorViewProps {
-  mode: Mode
   form: {
     main_image_url: string
     description: string
@@ -16,7 +13,6 @@ interface WorksEditorViewProps {
   }
   selectedWorkMedia: WorkMedia[]
   pendingMedia: { id: string; image_url: string }[]
-  loading?: boolean
   submitting?: boolean
   uploadingImage?: boolean
   uploadingMedia?: boolean
@@ -30,11 +26,9 @@ interface WorksEditorViewProps {
 }
 
 export default function WorksEditorView({
-  mode,
   form,
   selectedWorkMedia,
   pendingMedia,
-  loading = false,
   submitting = false,
   uploadingImage = false,
   uploadingMedia = false,

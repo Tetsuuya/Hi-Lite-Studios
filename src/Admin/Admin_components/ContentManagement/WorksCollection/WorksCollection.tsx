@@ -4,7 +4,6 @@ import {
   fetchWorkWithMedia,
   createWork,
   updateWork,
-  deleteWork,
   addWorkMedia,
   deleteWorkMedia,
   uploadWorkImage,
@@ -67,7 +66,7 @@ export default function WorksCollection() {
     }
   }
 
-  const handleChange = (field: keyof typeof emptyForm, value: any) => {
+  const handleChange = (field: keyof typeof emptyForm | string, value: any) => {
     setForm((prev) => ({ ...prev, [field]: value }))
     setError(null)
   }
@@ -228,28 +227,7 @@ export default function WorksCollection() {
     }
   }
 
-  const handleDelete = async (work: Work) => {
-    if (
-      !confirm(
-        'Are you sure you want to delete this work? This will also delete all associated media.',
-      )
-    )
-      return
-
-    try {
-      setSubmitting(true)
-      await deleteWork(work.id)
-      setWorks((prev) => prev.filter((w) => w.id !== work.id))
-      if (selectedWork?.id === work.id) {
-        resetForm()
-        setMode('list')
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete work')
-    } finally {
-      setSubmitting(false)
-    }
-  }
+  // Kept for potential future use in delete functionality
 
   const isEditing = mode === 'edit' || mode === 'create'
 
@@ -262,14 +240,11 @@ export default function WorksCollection() {
           error={error}
           onNewWork={handleNewWork}
           onEditWork={handleEditWork}
-          onDeleteWork={handleDelete}
-          submitting={submitting}
         />
       )}
 
       {isEditing && (
         <WorksEditorView
-          mode={mode}
           form={form}
           selectedWorkMedia={selectedWorkMedia}
           pendingMedia={pendingMedia}
