@@ -5,6 +5,7 @@ import WorksSection from '../components/sections/WorksSection';
 import ServicesSection from '../components/sections/ServicesSection';
 import MagazineSection from '../components/sections/MagazineSection';
 import FAQSection from '../components/sections/FAQSection';
+import CaptureSection from '../components/sections/CaptureSection';
 
 const Home = () => {
   return (
@@ -35,9 +36,12 @@ const Home = () => {
       </section>
 
       <section id="faq-section">
-              <FAQSection />
+        <FAQSection />
       </section>
-      
+
+      <section id="capture">
+        <CaptureSection />
+      </section>
     </div>
   );
 };
