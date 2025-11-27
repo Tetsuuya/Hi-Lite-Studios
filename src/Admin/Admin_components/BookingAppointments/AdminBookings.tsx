@@ -373,10 +373,6 @@ export default function AdminBookings() {
             Showing <strong>{bookings.length}</strong> booking
             {bookings.length !== 1 && 's'}
           </span>
-          <div className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1">
-            <span className="h-2 w-2 rounded-full bg-green-400" />
-            <span>Live Supabase data</span>
-          </div>
         </div>
       )}
     </section>

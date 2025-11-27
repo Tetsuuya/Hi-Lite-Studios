@@ -16,7 +16,7 @@ import LoginForAdmin from './Admin/AdminLogin';
 import AdminMain from './Admin/AdminMain';
 import BlogsStories from './Admin/Admin_components/BlogsAndStories/Magazine';
 import AdminBookings from './Admin/Admin_components/BookingAppointments/AdminBookings';
-import AdminContent from './Admin/Admin_components/ContentManagement/AboutUS';
+import AdminContent from './Admin/Admin_components/ContentManagement/AboutUS/AboutUS';
 import RequireAuth from './routes/RequireAuth';
 import AdminFAQ from './Admin/Admin_components/ContentManagement/AdminFAQ';
 import AddNewProject from './Admin/Admin_components/ContentManagement/AddNewProject';

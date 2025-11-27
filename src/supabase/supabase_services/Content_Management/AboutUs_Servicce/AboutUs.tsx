@@ -70,21 +70,30 @@ export async function fetchAboutUs() {
 
 // Upsert pattern - update if exists, create if not
 export async function updateAboutUs(input: UpdateAboutUsInput) {
+  const buildPayload = (data: UpdateAboutUsInput) =>
+    Object.fromEntries(
+      Object.entries({
+        main_image_url: data.main_image_url,
+        description: data.description,
+        meet_team_title: data.meet_team_title,
+        meet_team_subtitle: data.meet_team_subtitle,
+        what_we_do_title: data.what_we_do_title,
+        what_we_do_description: data.what_we_do_description,
+      }).filter(([, value]) => value !== undefined)
+    )
+
+  const payload = buildPayload(input)
   // First try to fetch existing
   const existing = await fetchAboutUs().catch(() => null)
 
   if (existing) {
+    if (Object.keys(payload).length === 0) {
+      return existing
+    }
     // Update existing
     const { data, error } = await supabase
       .from(TABLE_NAME)
-      .update({
-        main_image_url: input.main_image_url,
-        description: input.description,
-        meet_team_title: input.meet_team_title,
-        meet_team_subtitle: input.meet_team_subtitle,
-        what_we_do_title: input.what_we_do_title,
-        what_we_do_description: input.what_we_do_description,
-      })
+      .update(payload)
       .eq('id', existing.id)
       .select()
       .single()

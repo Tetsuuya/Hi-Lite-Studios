@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import WorksCollection from './WorksCollection'
-import AboutUsSection from './AboutUsSection'
-import AdminFAQ from './AdminFAQ'
+import WorksCollection from '../WorksCollection'
+import AdminFAQ from '../AdminFAQ'
+import AboutUsTab from './index'
 
 type Tab = 'works' | 'about' | 'faq'
 
@@ -17,22 +17,22 @@ export default function AdminContent() {
   return (
     <section className="space-y-6">
       <header className="space-y-1">
-        <p className="text-sm font-medium text-gray-500">Welcome, Admin.</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
+        <p className="text-md font-medium text-[#D42724]">Welcome, Admin.</p>
+        <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
           Content Management
         </h1>
       </header>
 
       {/* Tab Navigation */}
-      <div className="inline-flex rounded-full bg-gray-100 p-1">
+      <div className="inline-flex rounded-full bg-[gray-100] p-1">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-xs font-semibold uppercase tracking-wide rounded-full transition ${
+            className={`px-4 py-2 text-xs font-semibold uppercase tracking-wide rounded-md transition ${
               activeTab === tab.id
-                ? 'bg-white text-[#291471] shadow-sm'
+                ? 'bg-[#E2E2E2] text-[#291471] shadow-sm'
                 : 'text-gray-500 hover:text-gray-800'
             }`}
           >
@@ -44,7 +44,7 @@ export default function AdminContent() {
       {/* Tab Content */}
       <div>
         {activeTab === 'works' && <WorksCollection />}
-        {activeTab === 'about' && <AboutUsSection />}
+        {activeTab === 'about' && <AboutUsTab />}
         {activeTab === 'faq' && <AdminFAQ />}
       </div>
     </section>
