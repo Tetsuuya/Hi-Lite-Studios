@@ -1,6 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useWorksStore } from '@/store/worksStore'
+import StarBlack from '@/assets/images/StarBlack.png'
+import StarTopLeft from '@/assets/images/StarTL.png'
+import StarBottomRight from '@/assets/images/StarBR.png'
 
 const WorkDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -17,6 +20,18 @@ const WorkDetail = () => {
     fetchWorkById(id)
   }, [id, navigate, fetchWorkById])
 
+  // Ensure detail page opens at top without animation
+  useEffect(() => {
+    const docEl = document.documentElement
+    const prev = docEl.style.scrollBehavior
+    try {
+      docEl.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    } finally {
+      docEl.style.scrollBehavior = prev
+    }
+  }, [])
+
   const MAX_DESCRIPTION_LENGTH = 150
   const shouldTruncate = work?.description && work.description.length > MAX_DESCRIPTION_LENGTH
   const displayDescription = !expandedDescription && shouldTruncate && work?.description
@@ -25,14 +40,7 @@ const WorkDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white pt-6 px-6">
-        <button
-          type="button"
-          onClick={() => navigate('/works')}
-          className="rounded-ee-2xl rounded-tl-2xl border border-[#222222] px-6 py-2 text-sm font-semibold text-[#333333] transition hover:bg-[#222222] hover:text-white mb-8"
-        >
-          ← Back to Works
-        </button>
+      <div className="page-fade min-h-screen bg-white pt-6 px-6">
         <div className="space-y-8">
           {/* Image skeleton */}
           <div className="w-full flex justify-center py-8">
@@ -57,14 +65,7 @@ const WorkDetail = () => {
 
   if (!loading && !work) {
     return (
-      <div className="min-h-screen bg-white pt-6 px-6">
-        <button
-          type="button"
-          onClick={() => navigate('/works')}
-          className="rounded-ee-2xl rounded-tl-2xl border border-[#222222] px-6 py-2 text-sm font-semibold text-[#333333] transition hover:bg-[#222222] hover:text-white mb-8"
-        >
-          ← Back to Works
-        </button>
+      <div className="page-fade min-h-screen bg-white pt-6 px-6">
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           Work not found
         </div>
@@ -75,74 +76,107 @@ const WorkDetail = () => {
   if (!work) return null
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="page-fade min-h-screen bg-white">
+              {/* Decorative Top Left */}
+        <div className="absolute top-[-150px] left-[-275px] w-[600px] h-[600px] object-contain">
+          <img
+            src={StarTopLeft}
+            alt="Star top left"
+            className="w-full h-full object-contain"
+          />
+        </div>
+
+        {/* Decorative Bottom Right */}
+        <div className="absolute bottom-[-300px] right-[-275px] w-[600px] h-[600px] object-contain">
+          <img
+            src={StarBottomRight}
+            alt="Star bottom right"
+            className="w-full h-full object-contain"
+          />
+        </div>
+
       {/* Back Button */}
-      <div className="pt-6 px-6">
+      <div className="pt-6 px-6 relative z-10">
         <button
           type="button"
           onClick={() => navigate('/works')}
-          className="rounded-ee-2xl rounded-tl-2xl border border-[#222222] px-6 py-2 text-sm font-semibold text-[#333333] transition hover:bg-[#222222] hover:text-white"
+          className="rounded-ee-2xl rounded-tl-2xl border border-[#291471] px-6 py-2 text-sm font-semibold text-[#291471] transition hover:bg-[#291471] hover:text-white mb-8"
         >
-          ← Back to Works
+          ← Back to Collections
         </button>
       </div>
 
-      <div className="w-full flex justify-center py-8">
-        <img src={work.main_image_url || ''} alt={work.label_1 || 'Work'} className="max-w-2xl h-auto object-contain" />
-      </div>
-
-      <div className="space-y-4 px-8 py-8 md:px-10 max-w-4xl mx-auto">
-        <h2 className="text-4xl font-semibold text-[#333333]">{work.label_1 || 'Work'}</h2>
-        
-        {/* Date */}
-        {work.date && (
-          <p className="text-base text-[#666666]">
-            {new Date(work.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </p>
-        )}
-
-        {/* Secondary Label */}
-        {work.label_2 && (
-          <p className="text-base text-[#666666] font-semibold">
-            {work.label_2}
-          </p>
-        )}
-
-        <div className="h-px w-full bg-gray-200" />
-      </div>
-
-      {/* Description Section with Magazine-style alignment */}
-      {work.description && (
-        <div className="text-base leading-relaxed text-[#333333] max-w-4xl mx-auto px-8 md:px-10">
-          <style>{`
-            .work-description {
-              color: #444444;
-              line-height: 1.625;
-              text-align: justify;
-            }
-          `}</style>
-          <div className="work-description">
-            {displayDescription}
+      {/* Top two-column section */}
+      <section className="px-8 md:px-10 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          {/* Left: Cover image */}
+          <div className="w-full">
+            <img
+              src={work.main_image_url || ''}
+              alt={work.label_1 || 'Work'}
+              className="w-full h-auto object-cover rounded-xl"
+            />
           </div>
-          {shouldTruncate && (
-            <button
-              type="button"
-              onClick={() => setExpandedDescription(!expandedDescription)}
-              className="mt-3 px-4 py-1 text-sm font-semibold text-[#c21205] hover:text-[#a01604] transition"
-            >
-              {expandedDescription ? 'See Less' : 'See More'}
-            </button>
-          )}
+
+          {/* Right Column */}
+          <div className="space-y-4">
+            <h1 className="text-5xl font-semibold text-[#333333]">{work.label_1 || 'Work'}</h1>
+
+            {work.label_2 && (
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF8000]">
+                <span>{work.label_2}</span>
+              </div>
+            )}
+
+            {work.date && (
+              <p className="text-base text-[#666666]">
+                {new Date(work.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </p>
+            )}
+
+            {work.description && (
+              <div className="text-base leading-relaxed text-[#333333]">
+                <style>{`
+                  .work-description {
+                    color: #444444;
+                    line-height: 1.625;
+                    text-align: justify;
+                  }
+                `}</style>
+                <div className="work-description">{displayDescription}</div>
+                {shouldTruncate && (
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedDescription(!expandedDescription)}
+                      className="px-6 py-2 text-base font-bold text-[#c21205] hover:text-[#a01604] transition rounded-md"
+                    >
+                      {expandedDescription ? 'See Less' : 'See More'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+
+        {/* Divider  */}
+          <div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 mb-12 mt-12">
+            <div className="h-0.5 w-screen bg-black" />
+            <img src={StarBlack} alt="star-black" className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2 h-14 w-14" />
+          </div>
+      </section>
+
+        <div className="w-full text-center mb-8">
+          <h2 className="text-5xl font-semibold italic text-[#D42724]">Hi-Lite Gallery</h2>
+        </div>
 
       {/* Gallery Section */}
       {work.media && work.media.length > 0 && (
-        <div className="mt-12 space-y-6 px-8 md:px-10 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#333333]">Gallery</h2>
+        <section className="px-8 md:px-10 max-w-6xl mx-auto mb-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {work.media.map((media) => (
-              <div key={media.id} className="overflow-hidden rounded-lg bg-gray-100">
+              <div key={media.id} className="overflow-hidden rounded-xl bg-gray-100">
                 <img
                   src={media.image_url}
                   alt="Gallery"
@@ -151,7 +185,7 @@ const WorkDetail = () => {
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   )

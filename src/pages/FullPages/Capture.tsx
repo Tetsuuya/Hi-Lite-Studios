@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import BookingForm from '@/components/booking form/booking _form'
 import StarTL from '@/assets/images/StarTL.png'
 import StarBR from '@/assets/images/StarBR.png'
@@ -7,8 +8,19 @@ import ServiceStar from '@/assets/images/ServiceStar.png'
 const Capture = () => {
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const docEl = document.documentElement
+    const prev = docEl.style.scrollBehavior
+    try {
+      docEl.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    } finally {
+      docEl.style.scrollBehavior = prev
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white text-[#1f1f1f] relative overflow-hidden">
+    <div className="page-fade min-h-screen bg-white text-[#1f1f1f] relative overflow-hidden">
       {/* Decorative Stars */}
       <img
         src={StarTL}

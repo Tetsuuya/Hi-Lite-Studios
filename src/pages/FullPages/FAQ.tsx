@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useFAQ } from '@/components/sections/context/FAQContext'
 import FAQCard from '@/components/cards/FAQCards'
 
@@ -6,8 +7,19 @@ const FAQ = () => {
   const { items } = useFAQ()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const docEl = document.documentElement
+    const prev = docEl.style.scrollBehavior
+    try {
+      docEl.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    } finally {
+      docEl.style.scrollBehavior = prev
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white py-16">
+    <div className="page-fade min-h-screen bg-white py-16">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6">
         {/* Header */}
         <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

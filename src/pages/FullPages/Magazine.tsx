@@ -52,6 +52,18 @@ const Magazine = () => {
     }
   }, [handleSearchSubmit])
 
+  // Ensure page starts at top (no animated scroll) on mount
+  useEffect(() => {
+    const docEl = document.documentElement
+    const prev = docEl.style.scrollBehavior
+    try {
+      docEl.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    } finally {
+      docEl.style.scrollBehavior = prev
+    }
+  }, [])
+
   // Fetch all items on mount
   useEffect(() => {
     if (!id) {
@@ -110,7 +122,7 @@ const Magazine = () => {
   const gridItems = items.filter((item: any) => item.id !== featuredItem?.id).slice(0, 3)
 
   return (
-    <div className="min-h-screen bg-white py-12 pb-50">
+    <div className="page-fade min-h-screen bg-white py-12 pb-50">
       <div className="flex w-full flex-col gap-12 px-22">
         {/* If ID is present, always show article view */}
         {id ? (

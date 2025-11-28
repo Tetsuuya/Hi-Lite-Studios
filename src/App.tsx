@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import ContactSection from './components/sections/ContactSection';
 import Footer from './components/common/Footer';
@@ -20,12 +19,6 @@ import AddNewProject from './Admin/Admin_components/ContentManagement/WorksColle
 
 // Public layout wrapper (UserLayout)
 function UserLayout() {
-  const location = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

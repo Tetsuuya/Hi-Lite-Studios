@@ -82,8 +82,20 @@ const About = () => {
     fetchAboutData()
   }, [fetchAboutData])
 
+  // Ensure About page opens at the top without smooth transition
+  useEffect(() => {
+    const docEl = document.documentElement
+    const prev = docEl.style.scrollBehavior
+    try {
+      docEl.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    } finally {
+      docEl.style.scrollBehavior = prev
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="page-fade min-h-screen bg-white">
       {/* About Us Header */}
       <section className="relative w-full bg-white py-4 px-6">
         <div className="max-w-4xl mx-auto text-center">

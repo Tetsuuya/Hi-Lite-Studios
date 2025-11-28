@@ -114,18 +114,6 @@ const WorksSection = () => {
             ))
           )}
         </div>
-
-        {/* Load More Button - Show when there are more items */}
-        {hasMore && !loading && items.length > 0 && (
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={handleLoadMore}
-              className="px-8 py-2 bg-[#333333] text-white font-semibold rounded-ee-2xl rounded-tl-2xl hover:bg-[#444444] transition"
-            >
-              Load More ↓
-            </button>
-          </div>
-        )}
       </div>
     </section>
   )

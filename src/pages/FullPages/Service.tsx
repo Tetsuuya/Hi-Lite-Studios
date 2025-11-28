@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import IndoorIcon from '@/assets/images/ServiceIndoor.png'
 import OutdoorIcon from '@/assets/images/ServiceOutdoor.png'
@@ -72,8 +72,19 @@ const Service = () => {
   const [activeCard, setActiveCard] = useState<ServiceCard | null>(null)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const docEl = document.documentElement
+    const prev = docEl.style.scrollBehavior
+    try {
+      docEl.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    } finally {
+      docEl.style.scrollBehavior = prev
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="page-fade min-h-screen bg-white">
       {/* Back Button */}
       <div className="pt-6 pl-6">
         <button
