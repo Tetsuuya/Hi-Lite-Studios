@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { FAQItem } from '@/context/FAQContext'
+import type { FAQItem } from '@/components/sections/context/FAQContext'
 
 type FAQCardProps = {
   item: FAQItem

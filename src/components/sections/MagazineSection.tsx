@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useMagazine } from '@/context/MagazineContext'
+import { useMagazine } from '@/components/sections/context/MagazineContext'
 import MagazineCard from '@/components/cards/MagazineCard'
 import MagazineCardSkeleton from '@/components/cards/MagazineCardSkeleton'
 

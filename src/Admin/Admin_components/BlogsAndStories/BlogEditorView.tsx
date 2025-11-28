@@ -1,5 +1,6 @@
 import { memo, type ChangeEvent } from 'react'
 import RichTextEditor from '@/components/common/RichTextEditor'
+import { AdminEngagementPanel } from './AdminEngagementPanel'
 import type {
   BlogStatus,
 } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
@@ -32,6 +33,7 @@ interface BlogEditorViewProps {
   onSave: () => Promise<void> | void
   onCancel: () => void
   onDeleteCurrent?: () => Promise<void> | void
+  selectedStoryId?: number
 }
 
 export default memo(function BlogEditorView({
@@ -46,6 +48,7 @@ export default memo(function BlogEditorView({
   onSave,
   onCancel,
   onDeleteCurrent,
+  selectedStoryId,
 }: BlogEditorViewProps) {
   return (
     <div className="mt-6 space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -187,6 +190,11 @@ export default memo(function BlogEditorView({
           </button>
         </div>
       </div>
+
+      {/* Engagement Panel - Only show in edit mode */}
+      {mode === 'edit' && selectedStoryId && (
+        <AdminEngagementPanel blogStoryId={selectedStoryId} />
+      )}
     </div>
   )
 })

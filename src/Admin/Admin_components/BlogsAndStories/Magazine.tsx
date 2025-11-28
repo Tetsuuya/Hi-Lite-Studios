@@ -3,7 +3,7 @@ import type { BlogStory } from '@/supabase/supabase_services/Blogs_Stories/Blogs
 import {
   uploadBlogImage,
 } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
-import { useMagazine } from '@/context/MagazineContext'
+import { useMagazine } from '@/components/sections/context/MagazineContext'
 import { useAdminBlogStore } from '@/store/adminBlogStore'
 import BlogListView from './BlogListView'
 import BlogEditorView, {
@@ -270,6 +270,7 @@ export default function MagazineAdmin() {
           onSave={handleSave}
           onCancel={handleCancelEdit}
           onDeleteCurrent={mode === 'edit' ? handleDeleteCurrentFromEditor : undefined}
+          selectedStoryId={selectedStory?.id}
         />
       )}
 

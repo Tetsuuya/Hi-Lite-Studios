@@ -3,8 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import MagazineCard from '@/components/cards/MagazineCard'
 import MagazineCardSkeleton from '@/components/cards/MagazineCardSkeleton'
+import { EngagementForm } from '@/components/common/EngagementForm'
+import { EngagementItem } from '@/components/common/EngagementItem'
 import StarBlack from '@/assets/images/StarBlack.png'
 import { useMagazineStore } from '@/store/magazineStore'
+import { useMagazineEngagement } from '@/utils/useMagazineEngagement'
 
 const Magazine = () => {
   const { id } = useParams<{ id?: string }>()
@@ -14,6 +17,13 @@ const Magazine = () => {
   // Zustand store
   const { items, loading, articleLoading, articleCache, fetchItems, fetchArticleById } = useMagazineStore()
   const selectedItem = id ? articleCache.get(id) || null : null
+
+  // Magazine engagement (reactions and comments)
+  const engagement = useMagazineEngagement({
+    blogStoryId: id ? parseInt(id, 10) : 0,
+  })
+
+  const [isSubmittingEngagement, setIsSubmittingEngagement] = useState(false)
 
   // Fetch all items on mount
   useEffect(() => {
@@ -26,6 +36,28 @@ const Magazine = () => {
       fetchArticleById(id)
     }
   }, [id, fetchArticleById])
+
+  // Load reactions and comments when article is selected
+  useEffect(() => {
+    if (id) {
+      engagement.loadEngagements()
+    }
+  }, [id])
+
+  const handleEngagementSubmit = async (reactionType: any, content: string) => {
+    setIsSubmittingEngagement(true)
+    try {
+      await engagement.createEngagement(reactionType, content)
+    } finally {
+      setIsSubmittingEngagement(false)
+    }
+  }
+
+  const handleDeleteEngagement = async (engagementId: number) => {
+    if (confirm('Are you sure you want to delete this?')) {
+      await engagement.deleteEngagement(engagementId)
+    }
+  }
 
   // Filter items based on search query
   const filteredItems = items.filter((item) =>
@@ -163,6 +195,54 @@ const Magazine = () => {
                     dangerouslySetInnerHTML={{ __html: selectedItem.content }}
                   />
                 </div>
+
+              {/* Engagement Section */}
+              <div className="max-w-4xl mx-auto space-y-8 mt-12">
+                {/* Engagement Form */}
+                <EngagementForm
+                  onSubmit={handleEngagementSubmit}
+                  isLoading={isSubmittingEngagement}
+                />
+
+                {/* Divider */}
+                <div className="h-px bg-gray-300 w-full" />
+
+                {/* Engagements List */}
+                <div className="space-y-4">
+                  {engagement.loading ? (
+                    <div className="space-y-4">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex gap-4">
+                          <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-12 bg-gray-200 rounded animate-pulse" />
+                            <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : engagement.engagements.length > 0 ? (
+                    <>
+                      <p className="text-sm font-semibold text-gray-700">
+                        {engagement.engagements.length} {engagement.engagements.length === 1 ? 'Feedback' : 'Feedback'}
+                      </p>
+                      <div className="space-y-2">
+                        {engagement.engagements.map((item) => (
+                          <EngagementItem
+                            key={item.id}
+                            engagement={item}
+                            onDelete={handleDeleteEngagement}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-center py-12 text-gray-500">
+                      No feedback yet. Be the first to share your thoughts!
+                    </p>
+                  )}
+                </div>
+              </div>
             </>
           )
         ) : (
