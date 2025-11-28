@@ -20,17 +20,9 @@ const WorksSection = () => {
 
   const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%236b7280" font-size="16" font-family="sans-serif"%3EImage Placeholder%3C/text%3E%3C/svg%3E'
 
-  // Show loaded items or placeholders while loading initial batch
-  const displayWorks = items.length > 0 ? items : (loading ? Array.from({ length: 8 }).map((_, i) => ({
-    id: `placeholder-${i}`,
-    main_image_url: placeholderImage,
-    description: 'Description',
-    label_1: null,
-    label_2: null,
-    date: null,
-    created_at: '',
-    updated_at: '',
-  })) : [])
+  // Show skeleton loaders while loading, otherwise show loaded items
+  const displayWorks = items.length > 0 ? items : []
+  const showSkeletons = loading && items.length === 0
 
   const handleViewMore = () => {
     navigate('/works')
@@ -89,27 +81,38 @@ const WorksSection = () => {
 
         {/* Image Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {displayWorks.map((work) => (
-            <div 
-              key={work.id} 
-              className="flex flex-col cursor-pointer group"
-              onClick={() => !work.id.startsWith('placeholder-') && navigate(`/works/${work.id}`)}
-            >
-              <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
-                <img
-                  src={work.main_image_url || placeholderImage}
-                  alt={work.label_1 || 'Work'}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+          {showSkeletons ? (
+            // Show skeleton loaders while loading
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={`skeleton-${index}`} className="flex flex-col">
+                <div className="aspect-square w-full bg-gray-200 rounded-lg animate-pulse" />
+                <div className="mt-2 h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
               </div>
-              {/* Label - Below Image */}
-              {work.label_1 && (
-                <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-600 group-hover:text-gray-900 transition-colors">
-                  {work.label_1}
-                </p>
-              )}
-            </div>
-          ))}
+            ))
+          ) : (
+            // Show loaded works
+            displayWorks.map((work) => (
+              <div 
+                key={work.id} 
+                className="flex flex-col cursor-pointer group"
+                onClick={() => navigate(`/works/${work.id}`)}
+              >
+                <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
+                  <img
+                    src={work.main_image_url || placeholderImage}
+                    alt={work.label_1 || 'Work'}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                {/* Label - Below Image */}
+                {work.label_1 && (
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-600 group-hover:text-gray-900 transition-colors">
+                    {work.label_1}
+                  </p>
+                )}
+              </div>
+            ))
+          )}
         </div>
 
         {/* Load More Button - Show when there are more items */}
