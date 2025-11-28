@@ -29,13 +29,46 @@ export function FAQProvider({ children }: { children: ReactNode }) {
       setError(null)
       const data = await fetchAllFAQs()
       // Convert FAQ to FAQItem (exclude created_at and updated_at)
-      setItems(
-        data.map((faq) => ({
-          id: faq.id,
-          question: faq.question,
-          answer: faq.answer,
-        })),
-      )
+      const fetched = data.map((faq) => ({
+        id: faq.id,
+        question: faq.question,
+        answer: faq.answer,
+      }))
+
+      // Apply local admin ordering and featured overrides (stored in localStorage)
+      try {
+        const orderRaw = localStorage.getItem('faq_order')
+        const featuredRaw = localStorage.getItem('faq_featured')
+        const order = orderRaw ? (JSON.parse(orderRaw) as string[]) : []
+        const featured = featuredRaw ? (JSON.parse(featuredRaw) as string[]) : []
+
+        const byId = new Map(fetched.map((f) => [f.id, f]))
+
+        const featuredList: typeof fetched = []
+        const normalList: typeof fetched = []
+
+        // Use explicit order array first if present
+        const seen = new Set<string>()
+        for (const id of order) {
+          const item = byId.get(id)
+          if (!item) continue
+          seen.add(id)
+          if (featured.includes(id)) featuredList.push(item)
+          else normalList.push(item)
+        }
+
+        // Append remaining items not in order - featured first
+        for (const item of fetched) {
+          if (seen.has(item.id)) continue
+          if (featured.includes(item.id)) featuredList.push(item)
+          else normalList.push(item)
+        }
+
+        setItems([...featuredList, ...normalList])
+      } catch (err) {
+        // If localStorage parsing fails, fall back to fetched order
+        setItems(fetched)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch FAQs')
       console.error('Error fetching FAQs:', err)

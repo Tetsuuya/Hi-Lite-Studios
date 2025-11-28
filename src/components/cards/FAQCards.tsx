@@ -8,6 +8,10 @@ type FAQCardProps = {
   expanded?: boolean // when true, show the full answer by default (non-collapsible)
   onEdit?: (item: FAQItem) => void
   onDelete?: (id: string) => void
+  onMoveUp?: (id: string) => void
+  onMoveDown?: (id: string) => void
+  onToggleFeatured?: (id: string) => void
+  featured?: boolean
   onClick?: (item: FAQItem) => void // NEW: trigger modal or custom action
   className?: string
 }
@@ -19,6 +23,10 @@ const FAQCard = ({
   expanded = false,
   onEdit,
   onDelete,
+  onMoveUp,
+  onMoveDown,
+  onToggleFeatured,
+  featured = false,
   onClick,
   className = '',
 }: FAQCardProps) => {
@@ -76,21 +84,53 @@ const FAQCard = ({
       {isAdmin && (
         <div className="px-6 py-4 bg-gray-50">
           <p className="text-gray-700 leading-relaxed mb-4">{item.answer}</p>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => onEdit?.(item)}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => onDelete?.(item.id)}
-              className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 transition"
-            >
-              Delete
-            </button>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex gap-2 items-center">
+              <button
+                type="button"
+                onClick={() => onMoveUp?.(item.id)}
+                className="rounded-lg px-3 py-1 text-sm font-semibold text-gray-700 transition-all duration-150 hover:shadow-sm hover:scale-105"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                onClick={() => onMoveDown?.(item.id)}
+                className="rounded-lg px-3 py-1 text-sm font-semibold text-gray-700 transition-all duration-150 hover:shadow-sm hover:scale-105"
+                title="Move down"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleFeatured?.(item.id)}
+                className={`rounded-lg px-3 py-1 text-sm font-semibold transition-all duration-150 hover:scale-110 ${
+                  featured ? 'text-yellow-400' : 'text-gray-400'
+                }`}
+                title="Show on landing"
+              >
+                {featured ? '★' : '☆'}
+              </button>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => onEdit?.(item)}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all duration-150 hover:shadow-sm hover:scale-105"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete?.(item.id)}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105"
+                style={{ background: 'linear-gradient(to right, #F2322E 0%, #AA1815 100%)' }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

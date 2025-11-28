@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useFAQ, type FAQItem } from '@/components/sections/context/FAQContext'
 import FAQCard from '@/components/cards/FAQCards'
 
@@ -8,7 +9,7 @@ const emptyForm = {
 }
 
 export default function AdminFAQ() {
-  const { items, loading, error, addItem, updateItem, deleteItem } = useFAQ()
+  const { items, loading, error, addItem, updateItem, deleteItem, refreshItems } = useFAQ()
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -19,6 +20,9 @@ export default function AdminFAQ() {
     setSubmitError(null)
   }
 
+  const formRef = useRef<HTMLFormElement | null>(null)
+  const scrollYRef = useRef(0)
+
   const startEdit = (item: FAQItem) => {
     setEditingId(item.id)
     setForm({
@@ -26,6 +30,13 @@ export default function AdminFAQ() {
       answer: item.answer,
     })
     setSubmitError(null)
+
+    // Smooth scroll to the form and focus the first input
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const el = formRef.current?.querySelector('input,textarea') as HTMLInputElement | HTMLTextAreaElement | null
+      el?.focus()
+    }, 100)
   }
 
   const resetForm = () => {
@@ -55,15 +66,120 @@ export default function AdminFAQ() {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this FAQ?')) return
+  // Delete flow: open modal first, then confirm
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
+  const handleDeleteRequest = (id: string) => {
+    setDeleteId(id)
+    setShowDeleteModal(true)
+  }
+
+  // Ordering / featured helpers (persisted to localStorage)
+  const getOrder = () => {
     try {
-      await deleteItem(id)
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : 'Failed to delete FAQ')
+      const raw = localStorage.getItem('faq_order')
+      return raw ? (JSON.parse(raw) as string[]) : items.map((i) => i.id)
+    } catch {
+      return items.map((i) => i.id)
     }
   }
+
+  const saveOrder = (newOrder: string[]) => {
+    try {
+      localStorage.setItem('faq_order', JSON.stringify(newOrder))
+    } catch {}
+    refreshItems().catch(() => {})
+  }
+
+  const moveUp = (id: string) => {
+    const order = getOrder()
+    const idx = order.indexOf(id)
+    if (idx > 0) {
+      const copy = [...order]
+      ;[copy[idx - 1], copy[idx]] = [copy[idx], copy[idx - 1]]
+      saveOrder(copy)
+    }
+  }
+
+  const moveDown = (id: string) => {
+    const order = getOrder()
+    const idx = order.indexOf(id)
+    if (idx >= 0 && idx < order.length - 1) {
+      const copy = [...order]
+      ;[copy[idx], copy[idx + 1]] = [copy[idx + 1], copy[idx]]
+      saveOrder(copy)
+    }
+  }
+
+  const getFeatured = () => {
+    try {
+      const raw = localStorage.getItem('faq_featured')
+      return raw ? (JSON.parse(raw) as string[]) : []
+    } catch {
+      return []
+    }
+  }
+
+  const toggleFeatured = (id: string) => {
+    const featured = getFeatured()
+    const idx = featured.indexOf(id)
+    const next = idx === -1 ? [...featured, id] : featured.filter((f) => f !== id)
+    try {
+      localStorage.setItem('faq_featured', JSON.stringify(next))
+    } catch {}
+    refreshItems().catch(() => {})
+  }
+
+  const handleDeleteConfirmed = async () => {
+    if (!deleteId) return
+    setDeleting(true)
+    setSubmitError(null)
+    try {
+      await deleteItem(deleteId)
+      setShowDeleteModal(false)
+      setDeleteId(null)
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to delete FAQ')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false)
+    setDeleteId(null)
+  }
+
+  // Prevent background scroll and layout shift when modal is open
+  useEffect(() => {
+    if (!showDeleteModal) return
+    // when modal opens
+    scrollYRef.current = window.scrollY || window.pageYOffset
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollYRef.current}px`
+    document.body.style.left = '0'
+    document.body.style.right = '0'
+
+    return () => {
+      // restore when modal closes
+      const y = scrollYRef.current || 0
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
+      // Temporarily disable smooth scrolling to restore instantly
+      const docEl = document.documentElement
+      const prev = docEl.style.scrollBehavior
+      try {
+        docEl.style.scrollBehavior = 'auto'
+        window.scrollTo(0, y)
+      } finally {
+        docEl.style.scrollBehavior = prev
+      }
+    }
+  }, [showDeleteModal])
 
   return (
     <section className="space-y-8">
@@ -77,6 +193,7 @@ export default function AdminFAQ() {
 
       {/* Form Section */}
       <form
+        ref={formRef}
         onSubmit={handleSubmit}
         className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-6"
       >
@@ -112,7 +229,7 @@ export default function AdminFAQ() {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: '#1E40AF' }}
           >
             {submitting ? 'Saving...' : editingId ? 'Update FAQ' : 'Add FAQ'}
@@ -122,7 +239,7 @@ export default function AdminFAQ() {
               type="button"
               onClick={resetForm}
               disabled={submitting}
-              className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-150 hover:bg-gray-50 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -145,13 +262,48 @@ export default function AdminFAQ() {
                 item={item}
                 isAdmin={true}
                 onEdit={startEdit}
-                onDelete={handleDelete}
+                onDelete={handleDeleteRequest}
+                onMoveUp={moveUp}
+                onMoveDown={moveDown}
+                onToggleFeatured={toggleFeatured}
+                featured={getFeatured().includes(item.id)}
                 className="bg-gray-50 border-gray-300"
               />
             ))}
           </div>
         )}
       </section>
+
+      {/* Delete Confirmation Modal (rendered via portal so it always overlays) */}
+      {showDeleteModal && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={handleDeleteCancel} />
+          <div className="relative w-full max-w-2xl rounded-xl bg-white p-8 shadow-2xl mx-4">
+            <h3 className="mb-3 text-2xl font-semibold">Confirm delete</h3>
+            <p className="mb-6 text-sm text-gray-600">Are you sure you want to delete this FAQ? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={handleDeleteCancel}
+                className="rounded-lg border border-gray-300 px-5 py-2 text-sm font-semibold text-gray-700 transition-all duration-150 hover:bg-gray-50 disabled:opacity-50"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteConfirmed}
+                className="rounded-lg px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-xl hover:scale-105 disabled:opacity-50"
+                style={{ background: 'linear-gradient(to right, #F2322E 0%, #AA1815 100%)' }}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
     </section>
   )
 }
