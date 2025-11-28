@@ -28,7 +28,7 @@ export default function WorksListView({
         </button>
 
         {works.length > 0 && (
-          <p className="text-xs text-gray-500">
+          <p className="text-s text-[#333333]">
             Showing <strong>{works.length}</strong> work{works.length !== 1 ? 's' : ''}
           </p>
         )}

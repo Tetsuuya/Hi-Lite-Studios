@@ -225,8 +225,7 @@ export default function MagazineAdmin() {
   return (
     <section className="space-y-6">
       <header className="space-y-1">
-        <p className="text-md font-medium text-[#D42724]">Welcome, Admin.</p>
-        <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
+        <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">
           Magazine Management
         </h1>
       </header>

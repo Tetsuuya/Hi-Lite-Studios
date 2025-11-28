@@ -9,6 +9,7 @@ interface ImageUploadFieldProps {
   changeButtonText?: string
   uploadButtonText?: string
   alt?: string
+  buttonColor?: string
 }
 
 export default function ImageUploadField({
@@ -20,6 +21,7 @@ export default function ImageUploadField({
   changeButtonText = 'Change Image',
   uploadButtonText = 'Click to upload cover image',
   alt = 'Cover',
+  buttonColor = '#291471',
 }: ImageUploadFieldProps) {
   const isDisabled = uploading || submitting
 
@@ -32,7 +34,8 @@ export default function ImageUploadField({
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
               <img src={value} alt={alt} className="h-64 w-full object-cover" />
             </div>
-            <label className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">
+            <label className="inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 disabled:opacity-50"
+              style={{ backgroundColor: buttonColor }}>
               <span>{uploading ? 'Uploading...' : changeButtonText}</span>
               <input
                 type="file"

@@ -2,7 +2,11 @@ import type { ChangeEvent } from 'react'
 import { Calendar } from '@/components/ui/calendar'
 import { ImageUploadField, MediaGallery, MediaUploadField } from '../../shared'
 import { WORK_LABEL_OPTIONS } from '../../../../utils'
+import StarBlack from '@/assets/images/StarBlack.png'
 import type { WorkLabel, WorkMedia } from '@/supabase/supabase_services/Content_Management/WorksCollection_Service/WorksCollection'
+
+const PURPLE_PRIMARY = '#291471'
+const RED_LIGHT = '#D42724'
 
 interface WorksEditorViewProps {
   form: {
@@ -50,35 +54,54 @@ export default function WorksEditorView({
       )}
 
       {/* Main Content Form */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-6">
-        <div className="grid gap-6 lg:grid-cols-[2fr,3fr]">
-          {/* Image Section */}
-          <ImageUploadField
-            value={form.main_image_url}
-            uploading={uploadingImage}
-            submitting={submitting}
-            onChange={onMainImageUpload}
-            label="Upload Cover Image"
-          />
+      <div className="rounded-xl bg-white p-6 space-y-6">
+        {/* Image Section */}
+        <ImageUploadField
+          value={form.main_image_url}
+          uploading={uploadingImage}
+          submitting={submitting}
+          onChange={onMainImageUpload}
+          label="Upload Cover Image"
+          changeButtonText="Change Image"
+          buttonColor={PURPLE_PRIMARY}
+        />
 
-          {/* Description Section */}
-          <div className="space-y-4">
+        {/* Two-Column Layout */}
+        <div className="grid gap-6 lg:grid-cols-[4fr_1.5fr] items-stretch">
+          {/* Column 1: Description */}
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-gray-800">DESCRIPTION</label>
+            <textarea
+              className="w-full h-[500px] rounded-lg border border-gray-300 px-4 py-3 text-sm 
+                        focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 resize-none"
+              value={form.description}
+              onChange={(e) => onChangeField('description', e.target.value)}
+              placeholder="Enter description..."
+              disabled={submitting}
+            />
+          </div>
+
+          {/* Column 2: Calendar & Label */}
+          <div className="flex flex-col w-full max-w-sm ml-auto space-y-3">
+            {/* Calendar */}
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-800">DESCRIPTION</label>
-              <textarea
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                rows={8}
-                value={form.description}
-                onChange={(e) => onChangeField('description', e.target.value)}
-                placeholder="Enter description..."
-                disabled={submitting}
-              />
+              <label className="text-sm font-medium text-gray-800">DATE</label>
+              <div className="rounded-2xl border border-[#dcdcdc] p-2 flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={form.date || undefined}
+                  onSelect={(date) => onChangeField('date', date || null)}
+                  disabled={submitting}
+                />
+              </div>
             </div>
 
+            {/* Label Selector */}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-800">LABEL</label>
               <select
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
+                          focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100"
                 value={form.label_1}
                 onChange={(e) => onChangeField('label_1', e.target.value as WorkLabel)}
                 disabled={submitting}
@@ -91,38 +114,22 @@ export default function WorksEditorView({
                 ))}
               </select>
             </div>
-
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-800">Date</label>
-              <div className="rounded-lg border border-gray-200">
-                <Calendar
-                  mode="single"
-                  selected={form.date || undefined}
-                  onSelect={(date) => onChangeField('date', date || null)}
-                  disabled={submitting}
-                />
-              </div>
-            </div>
           </div>
         </div>
-      </div>
 
-      {/* Separator Line */}
-      <div className="relative my-8">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-white px-4 text-gray-400">
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          </span>
+        {/* Separator with Star Icon */}
+        <div className="relative mt-16">
+          <div className="h-0.5 w-full bg-black" />
+          <img
+            src={StarBlack}
+            alt="star-black"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16"
+          />
         </div>
       </div>
 
       {/* Media Gallery Section */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-6">
+      <div className="rounded-xl bg-white p-6 space-y-6 ">
         <div className="flex items-center justify-between">
           <MediaUploadField
             uploading={uploadingMedia}
@@ -134,7 +141,10 @@ export default function WorksEditorView({
               type="button"
               onClick={onSave}
               disabled={submitting || !form.main_image_url}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-md px-6 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              style={{
+                backgroundColor: RED_LIGHT,
+              }}
             >
               {submitting ? 'Saving...' : 'Save'}
             </button>
@@ -142,7 +152,7 @@ export default function WorksEditorView({
               type="button"
               onClick={onCancel}
               disabled={submitting}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:shadow-md hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
             >
               Cancel
             </button>

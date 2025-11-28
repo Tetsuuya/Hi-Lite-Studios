@@ -31,7 +31,7 @@ export default function WorkCard({ work, onEdit }: WorkCardProps) {
           <button
             type="button"
             onClick={() => onEdit(work)}
-            className="rounded-full bg-[#291471] px-4 py-1 text-[11px] font-semibold uppercase tracking-wide text-white shadow-md hover:bg-[#1e0f55]"
+            className="rounded-full bg-[#D42724] px-6 py-1 text-[11px] font-semibold uppercase tracking-wide text-white shadow-md hover:bg-[#bd110e]"
           >
             Edit
           </button>

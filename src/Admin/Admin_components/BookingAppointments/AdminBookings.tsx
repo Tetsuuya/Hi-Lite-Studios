@@ -6,7 +6,6 @@ import CancelledIcon from '../../../assets/images/Adminbuttons/bookings_buttons/
 import DeclinedIcon from '../../../assets/images/Adminbuttons/bookings_buttons/Declinebutton.png'
 import { useBookings, BOOKING_TABS } from '../../../utils'
 import { BookingsTable, BookingsHeader } from '../shared'
-import HeroStar from '@/assets/images/HeroStar.png'
 
 type Tab = BookingStatus
 
@@ -104,13 +103,7 @@ export default function AdminBookings() {
 
   return (
     <section className="space-y-6 relative">
-      <img
-        src={HeroStar}
-        alt="Admin Star Graphic"
-        className="absolute right-0 -top-50 -translate-y-8 w-[550px] pointer-events-none select-none -z-10"
-      />
       <header className="space-y-3">
-        <p className="text-3xl font-bold text-[#D42724]">Welcome, Admin.</p>
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">
           Booking Appointments
         </h1>
