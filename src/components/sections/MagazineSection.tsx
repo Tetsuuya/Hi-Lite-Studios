@@ -1,11 +1,16 @@
 import { useNavigate } from 'react-router-dom'
-import { useMagazine } from '@/components/sections/context/MagazineContext'
+import { useEffect } from 'react'
 import MagazineCard from '@/components/cards/MagazineCard'
 import MagazineCardSkeleton from '@/components/cards/MagazineCardSkeleton'
+import { useMagazineStore } from '@/store/magazineStore'
 
 const MagazineSection = () => {
-  const { items, loading } = useMagazine()
+  const { items, loading, fetchItems } = useMagazineStore()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    fetchItems()
+  }, [fetchItems])
 
   const previews = items.slice(0, 3)
 
@@ -42,8 +47,8 @@ const MagazineSection = () => {
               <MagazineCard
                 key={item.id}
                 title={item.title}
-                image={item.image}
-                excerpt={item.excerpt}
+                image={item.cover_image || ''}
+                excerpt={item.excerpt || ''}
                 onClick={() => navigate(`/magazine/${item.id}`)}
               />
             ))

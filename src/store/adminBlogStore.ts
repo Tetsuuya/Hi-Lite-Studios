@@ -12,6 +12,7 @@ import {
   type NewBlogStoryInput,
   type UpdateBlogStoryInput,
 } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
+import { useMagazineStore } from './magazineStore'
 
 interface AdminBlogState {
   // List view
@@ -115,6 +116,8 @@ export const useAdminBlogStore = create<AdminBlogState>()(
           stories: [newStory, ...state.stories],
           saving: false,
         }))
+        // Sync with magazine store
+        useMagazineStore.getState().addItem(newStory)
         return newStory
       } catch (err: any) {
         set({
@@ -135,6 +138,8 @@ export const useAdminBlogStore = create<AdminBlogState>()(
           editingStory: updatedStory,
           saving: false,
         }))
+        // Sync with magazine store and invalidate cache
+        useMagazineStore.getState().updateItem(id.toString(), updatedStory)
         return updatedStory
       } catch (err: any) {
         set({
@@ -155,6 +160,8 @@ export const useAdminBlogStore = create<AdminBlogState>()(
           editingStory: null,
           saving: false,
         }))
+        // Sync with magazine store and invalidate cache
+        useMagazineStore.getState().deleteItem(id.toString())
         return true
       } catch (err: any) {
         set({
@@ -178,6 +185,8 @@ export const useAdminBlogStore = create<AdminBlogState>()(
           editingStory: state.editingStory?.id === id ? updatedStory : state.editingStory,
           saving: false,
         }))
+        // Sync with magazine store and invalidate cache
+        useMagazineStore.getState().updateItem(id.toString(), updatedStory)
         return true
       } catch (err: any) {
         set({

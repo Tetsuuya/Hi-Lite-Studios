@@ -8,16 +8,16 @@ import { useWorksStore } from '@/store/worksStore'
 
 const WorksSection = () => {
   const navigate = useNavigate()
-  const { items, loading, fetchItems } = useWorksStore()
+  const { items, loading, error, hasMore, fetchItems, loadMore } = useWorksStore()
 
   useEffect(() => {
-    fetchItems()
+    fetchItems(8)
   }, [fetchItems])
 
   const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%236b7280" font-size="16" font-family="sans-serif"%3EImage Placeholder%3C/text%3E%3C/svg%3E'
 
-  // Show first 8 works, or placeholders while loading
-  const displayWorks = items.length > 0 ? items.slice(0, 8) : Array.from({ length: 8 }).map((_, i) => ({
+  // Show loaded items or placeholders while loading initial batch
+  const displayWorks = items.length > 0 ? items : (loading ? Array.from({ length: 8 }).map((_, i) => ({
     id: `placeholder-${i}`,
     main_image_url: placeholderImage,
     description: 'Description',
@@ -26,10 +26,14 @@ const WorksSection = () => {
     date: null,
     created_at: '',
     updated_at: '',
-  }))
+  })) : [])
 
   const handleViewMore = () => {
     navigate('/works')
+  }
+
+  const handleLoadMore = () => {
+    loadMore(4)
   }
 
   return (
@@ -72,13 +76,20 @@ const WorksSection = () => {
           </button>
         </div>
 
-        {/* Image Grid - 2x4 */}
+        {/* Error Message */}
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 mb-6">
+            Error: {error}
+          </div>
+        )}
+
+        {/* Image Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {displayWorks.map((work) => (
             <div 
               key={work.id} 
               className="flex flex-col cursor-pointer group"
-              onClick={() => work.id !== 'placeholder-0' && !work.id.startsWith('placeholder-') && navigate(`/works/${work.id}`)}
+              onClick={() => !work.id.startsWith('placeholder-') && navigate(`/works/${work.id}`)}
             >
               <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
                 <img
@@ -96,6 +107,18 @@ const WorksSection = () => {
             </div>
           ))}
         </div>
+
+        {/* Load More Button - Show when there are more items */}
+        {hasMore && !loading && items.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={handleLoadMore}
+              className="px-8 py-2 bg-[#333333] text-white font-semibold rounded-ee-2xl rounded-tl-2xl hover:bg-[#444444] transition"
+            >
+              Load More ↓
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

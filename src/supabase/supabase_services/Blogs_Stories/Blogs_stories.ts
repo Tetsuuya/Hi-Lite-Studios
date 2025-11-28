@@ -86,6 +86,53 @@ export async function fetchPublishedBlogStories() {
   return (data ?? []).map((story) => ({ ...story, content: '' })) as BlogStory[]
 }
 
+// Paginated query for list views
+export async function fetchPublishedBlogStoriesPaginated(page: number = 1, pageSize: number = 12) {
+  const start = (page - 1) * pageSize
+  const end = start + pageSize - 1
+
+  const { data, error, count } = await supabase
+    .from(TABLE_NAME)
+    .select('id, title, slug, cover_image, excerpt, is_pinned, status, created_at, updated_at', { count: 'exact' })
+    .eq('status', 'published')
+    .order('is_pinned', { ascending: false })
+    .order('created_at', { ascending: false })
+    .range(start, end)
+
+  if (error) throw error
+  return {
+    items: (data ?? []).map((story) => ({ ...story, content: '' })) as BlogStory[],
+    total: count ?? 0,
+    page,
+    pageSize,
+    totalPages: Math.ceil((count ?? 0) / pageSize),
+  }
+}
+
+// Server-side search for published stories
+export async function searchPublishedBlogStories(query: string, page: number = 1, pageSize: number = 12) {
+  const start = (page - 1) * pageSize
+  const end = start + pageSize - 1
+
+  const { data, error, count } = await supabase
+    .from(TABLE_NAME)
+    .select('id, title, slug, cover_image, excerpt, is_pinned, status, created_at, updated_at', { count: 'exact' })
+    .eq('status', 'published')
+    .or(`title.ilike.%${query}%,excerpt.ilike.%${query}%`)
+    .order('is_pinned', { ascending: false })
+    .order('created_at', { ascending: false })
+    .range(start, end)
+
+  if (error) throw error
+  return {
+    items: (data ?? []).map((story) => ({ ...story, content: '' })) as BlogStory[],
+    total: count ?? 0,
+    page,
+    pageSize,
+    totalPages: Math.ceil((count ?? 0) / pageSize),
+  }
+}
+
 export async function fetchBlogStoryById(id: number) {
   const { data, error } = await supabase
     .from(TABLE_NAME)

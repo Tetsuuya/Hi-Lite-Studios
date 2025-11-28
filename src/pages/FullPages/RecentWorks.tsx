@@ -7,11 +7,15 @@ import { useWorksStore } from '@/store/worksStore'
 
 const RecentWorks = () => {
   const navigate = useNavigate()
-  const { items: works, loading, error, fetchItems } = useWorksStore()
+  const { items: works, loading, error, hasMore, fetchItems, loadMore } = useWorksStore()
 
   useEffect(() => {
-    fetchItems()
+    fetchItems(12)
   }, [fetchItems])
+
+  const handleLoadMore = () => {
+    loadMore(8)
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -65,7 +69,7 @@ const RecentWorks = () => {
           )}
 
           {/* Loading State */}
-          {loading ? (
+          {loading && works.length === 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {Array.from({ length: 8 }).map((_, index) => (
                 <div
@@ -79,33 +83,48 @@ const RecentWorks = () => {
               <p className="text-gray-500">No works found yet.</p>
             </div>
           ) : (
-            /* Image Grid - 2x4 */
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {works.map((work) => (
-                <div 
-                  key={work.id} 
-                  className="flex flex-col cursor-pointer group"
-                  onClick={() => navigate(`/works/${work.id}`)}
-                >
-                  <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
-                    <img
-                      src={work.main_image_url || ''}
-                      alt={work.label_1 || 'Work'}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="18"%3ENo Image%3C/text%3E%3C/svg%3E'
-                      }}
-                    />
+            <>
+              {/* Image Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {works.map((work) => (
+                  <div 
+                    key={work.id} 
+                    className="flex flex-col cursor-pointer group"
+                    onClick={() => navigate(`/works/${work.id}`)}
+                  >
+                    <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
+                      <img
+                        src={work.main_image_url || ''}
+                        alt={work.label_1 || 'Work'}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="18"%3ENo Image%3C/text%3E%3C/svg%3E'
+                        }}
+                      />
+                    </div>
+                    {/* Label - Below Image */}
+                    {work.label_1 && (
+                      <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-600 group-hover:text-gray-900 transition-colors">
+                        {work.label_1}
+                      </p>
+                    )}
                   </div>
-                  {/* Label - Below Image */}
-                  {work.label_1 && (
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-600 group-hover:text-gray-900 transition-colors">
-                      {work.label_1}
-                    </p>
-                  )}
+                ))}
+              </div>
+
+              {/* Load More Button */}
+              {hasMore && (
+                <div className="flex justify-center mt-8 mb-8">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    className="px-8 py-2 bg-[#333333] text-white font-semibold rounded-ee-2xl rounded-tl-2xl hover:bg-[#444444] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? 'Loading...' : 'Load More ↓'}
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </section>

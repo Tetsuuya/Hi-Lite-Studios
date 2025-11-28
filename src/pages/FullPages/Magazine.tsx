@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import MagazineCard from '@/components/cards/MagazineCard'
@@ -8,14 +8,14 @@ import { EngagementItem } from '@/components/common/EngagementItem'
 import StarBlack from '@/assets/images/StarBlack.png'
 import { useMagazineStore } from '@/store/magazineStore'
 import { useMagazineEngagement } from '@/utils/useMagazineEngagement'
+import { useDebouncedRequest } from '@/utils/useDedupRequest'
 
 const Magazine = () => {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState('')
   
   // Zustand store
-  const { items, loading, articleLoading, articleCache, fetchItems, fetchArticleById } = useMagazineStore()
+  const { items, loading, articleLoading, articleCache, currentPage, totalPages, searchQuery, fetchItems, searchItems, setCurrentPage, setSearchQuery, fetchArticleById } = useMagazineStore()
   const selectedItem = id ? articleCache.get(id) || null : null
 
   // Magazine engagement (reactions and comments)
@@ -25,10 +25,24 @@ const Magazine = () => {
 
   const [isSubmittingEngagement, setIsSubmittingEngagement] = useState(false)
 
+  // Debounced search to prevent excessive API calls
+  const debouncedSearch = useDebouncedRequest(
+    async (query: string) => {
+      if (query.trim()) {
+        await searchItems(query, 1)
+      } else {
+        await fetchItems(1)
+      }
+    },
+    300,
+  )
+
   // Fetch all items on mount
   useEffect(() => {
-    fetchItems()
-  }, [fetchItems])
+    if (!id) {
+      fetchItems(1)
+    }
+  }, [id, fetchItems])
 
   // Fetch single article when ID changes
   useEffect(() => {
@@ -59,14 +73,17 @@ const Magazine = () => {
     }
   }
 
-  // Filter items based on search query
-  const filteredItems = items.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (item.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
-  )
+  const handleSearch = useCallback((value: string) => {
+    setSearchQuery(value)
+    debouncedSearch(value)
+  }, [setSearchQuery, debouncedSearch])
 
-  const featuredItem = filteredItems.length > 0 ? filteredItems[0] : null
-  const gridItems = filteredItems.slice(1, 4)
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page)
+  }, [setCurrentPage])
+
+  const featuredItem = items.length > 0 ? items[0] : null
+  const gridItems = items.slice(1, 4)
 
   return (
     <div className="min-h-screen bg-white py-12 pb-50">
@@ -111,90 +128,83 @@ const Magazine = () => {
               </div>
               <div 
                 className="text-base leading-relaxed text-[#333333] max-w-4xl mx-auto px-8 md:px-10"
+                style={{
+                  '--tw-prose-body': '#333333',
+                } as React.CSSProperties}
               >
                 <style>{`
-                    .magazine-content img {
-                      max-width: 90%;
-                      max-height: 500px;
-                      height: auto;
-                      width: auto;
-                      margin: 2rem auto;
-                      display: block;
-                      border-radius: 0.75rem;
-                      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
-                    }
-                    .magazine-content h1 {
-                      font-size: 1.875rem;
-                      font-weight: 700;
-                      color: #333333;
-                      margin-bottom: 1rem;
-                      margin-left: 0;
-                      margin-right: 0;
-                      text-align: justify;
-                    }
-                    .magazine-content h2 {
-                      font-size: 1.5rem;
-                      font-weight: 700;
-                      color: #333333;
-                      margin-bottom: 0.75rem;
-                      margin-left: 0;
-                      margin-right: 0;
-                      text-align: justify;
-                    }
-                    .magazine-content h3 {
-                      font-size: 1.25rem;
-                      font-weight: 700;
-                      color: #333333;
-                      margin-bottom: 0.5rem;
-                      margin-left: 0;
-                      margin-right: 0;
-                      text-align: justify;
-                    }
-                    .magazine-content p {
-                      color: #444444;
-                      margin-bottom: 1rem;
-                      line-height: 1.625;
-                      margin-left: 0;
-                      margin-right: 0;
-                      text-align: justify;
-                    }
-                    .magazine-content strong {
-                      font-weight: 600;
-                      color: #222222;
-                      display: inline;
-                    }
-                    .magazine-content em {
-                      font-style: italic;
-                      color: #444444;
-                      display: inline;
-                    }
-                    .magazine-content a {
-                      color: #2563eb;
-                      text-decoration: underline;
-                    }
-                    .magazine-content a:hover {
-                      color: #1d4ed8;
-                    }
-                    .magazine-content ul {
-                      list-style-type: disc;
-                      margin-left: 1.5rem;
-                      margin-bottom: 1rem;
-                    }
-                    .magazine-content ol {
-                      list-style-type: decimal;
-                      margin-left: 1.5rem;
-                      margin-bottom: 1rem;
-                    }
-                    .magazine-content li {
-                      color: #444444;
-                      margin-bottom: 0.5rem;
-                    }
-                  `}</style>
-                  <div 
-                    className="magazine-content"
-                    dangerouslySetInnerHTML={{ __html: selectedItem.content }}
-                  />
-                </div>
+                  .prose-content img {
+                    max-width: 90%;
+                    max-height: 500px;
+                    height: auto;
+                    width: auto;
+                    margin: 2rem auto;
+                    display: block;
+                    border-radius: 0.75rem;
+                    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+                  }
+                  .prose-content h1 {
+                    font-size: 1.875rem;
+                    font-weight: 700;
+                    color: #333333;
+                    margin-bottom: 1rem;
+                    text-align: justify;
+                  }
+                  .prose-content h2 {
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: #333333;
+                    margin-bottom: 0.75rem;
+                    text-align: justify;
+                  }
+                  .prose-content h3 {
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: #333333;
+                    margin-bottom: 0.5rem;
+                    text-align: justify;
+                  }
+                  .prose-content p {
+                    color: #444444;
+                    margin-bottom: 1rem;
+                    line-height: 1.625;
+                    text-align: justify;
+                  }
+                  .prose-content strong {
+                    font-weight: 600;
+                    color: #222222;
+                  }
+                  .prose-content em {
+                    font-style: italic;
+                    color: #444444;
+                  }
+                  .prose-content a {
+                    color: #2563eb;
+                    text-decoration: underline;
+                  }
+                  .prose-content a:hover {
+                    color: #1d4ed8;
+                  }
+                  .prose-content ul {
+                    list-style-type: disc;
+                    margin-left: 1.5rem;
+                    margin-bottom: 1rem;
+                  }
+                  .prose-content ol {
+                    list-style-type: decimal;
+                    margin-left: 1.5rem;
+                    margin-bottom: 1rem;
+                  }
+                  .prose-content li {
+                    color: #444444;
+                    margin-bottom: 0.5rem;
+                  }
+                `}</style>
+                <div 
+                  className="prose-content"
+                  dangerouslySetInnerHTML={{ __html: selectedItem.content }}
+                />
+              </div>
 
               {/* Engagement Section */}
               <div className="max-w-4xl mx-auto space-y-8 mt-12">
@@ -321,7 +331,7 @@ const Magazine = () => {
                       type="text"
                       placeholder="Search stories..."
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e) => handleSearch(e.target.value)}
                       className="w-full px-4 py-2 border-2 border-[#222222] rounded-full focus:outline-none focus:ring-2 focus:ring-[#c21205] focus:ring-offset-2"
                     />
                     <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666666]" />
@@ -347,6 +357,37 @@ const Magazine = () => {
                     </div>
                   )}
                 </section>
+
+                {/* Pagination */}
+                {!searchQuery && totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 border border-[#222222] rounded hover:bg-[#222222] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      ← Previous
+                    </button>
+                    <div className="flex gap-1">
+                      {Array.from({ length: totalPages }).map((_, i) => (
+                        <button
+                          key={i + 1}
+                          onClick={() => handlePageChange(i + 1)}
+                          className={`px-3 py-2 rounded ${currentPage === i + 1 ? 'bg-[#222222] text-white' : 'border border-[#222222] hover:bg-gray-100'}`}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 border border-[#222222] rounded hover:bg-[#222222] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </>
