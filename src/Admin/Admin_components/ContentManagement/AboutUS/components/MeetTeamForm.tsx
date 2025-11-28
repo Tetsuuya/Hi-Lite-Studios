@@ -14,7 +14,7 @@ type MeetTeamFormProps = {
   onChange: (changes: Partial<MeetTeamValues>) => void
   onSubmit: () => void
   onAddStaff: () => void
-  onNewStaffNameChange: (value: string) => void
+  onNewStaffNameChange: (name: string) => void
   onDeleteStaff: (id: string) => void
   editing: boolean
   onEditToggle: () => void
@@ -47,7 +47,7 @@ export default function MeetTeamForm({
                 type="button"
                 onClick={onSubmit}
                 disabled={submitting}
-                className="rounded px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg px-5 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ backgroundColor: '#1E40AF' }}
               >
                 {submitting ? 'Saving...' : 'Save'}
@@ -56,7 +56,7 @@ export default function MeetTeamForm({
                 type="button"
                 onClick={onCancel}
                 disabled={submitting}
-                className="rounded border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                className="rounded-lg border border-gray-300 px-5 py-2 text-xs font-semibold text-gray-700 transition-all duration-150 hover:bg-gray-50 hover:shadow-sm disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -65,8 +65,8 @@ export default function MeetTeamForm({
             <button
               type="button"
               onClick={onEditToggle}
-              className="rounded px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90"
-              style={{ backgroundColor: '#1E40AF' }}
+              className="rounded-lg px-5 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105"
+              style={{ backgroundColor: '#D42724' }}
             >
               Edit
             </button>
@@ -100,33 +100,36 @@ export default function MeetTeamForm({
         </div>
 
         {/* Add Staff Section */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-gray-500">Add Staff Member</label>
-          <div className="flex flex-wrap gap-2">
-            <input
-              type="text"
-              className="rounded border border-gray-300 px-2 py-2 text-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-              value={newStaffName}
-              onChange={(e) => onNewStaffNameChange(e.target.value)}
-              placeholder="Insert Name"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  onAddStaff()
-                }
-              }}
-              disabled={!editing || addingStaff}
-            />
-            <button
-              type="button"
-              onClick={onAddStaff}
-              disabled={!editing || addingStaff || !newStaffName.trim()}
-              className="rounded px-3 py-1 text-xs font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              style={{ backgroundColor: '#1E40AF' }}
-            >
-              {addingStaff ? 'Adding...' : 'Add Staff'}
-            </button>
+        {editing && (
+          <div className="space-y-2">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-500">Add Staff Member</label>
+            <div className="flex flex-wrap gap-2">
+              <input
+                type="text"
+                className="rounded-lg border border-gray-300 px-3 py-2 text-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                value={newStaffName}
+                onChange={(e) => onNewStaffNameChange(e.target.value)}
+                placeholder="Insert Name"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    onAddStaff()
+                  }
+                }}
+                disabled={!editing || addingStaff}
+              />
+              <button
+                type="button"
+                onClick={onAddStaff}
+                disabled={!editing || addingStaff || !newStaffName.trim()}
+                className="rounded-lg px-4 py-1 text-xs font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+                style={{ backgroundColor: '#1E40AF' }}
+              >
+                {addingStaff ? 'Adding...' : 'Add Staff'}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Staff Grid */}
         <div className="space-y-2">
@@ -139,20 +142,22 @@ export default function MeetTeamForm({
                     type="text"
                     value={member.name}
                     disabled
-                    className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900"
                   />
                   <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => onDeleteStaff(member.id)}
-                      className="rounded px-2 py-0.5 text-xs font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                      style={{
-                        background: 'linear-gradient(to right, #F2322E 0%, #AA1815 100%)',
-                      }}
-                      disabled={!editing}
-                    >
-                      Delete
-                    </button>
+                    {editing && (
+                      <button
+                        type="button"
+                        onClick={() => onDeleteStaff(member.id)}
+                        className="rounded-lg px-3 py-1 text-xs font-semibold text-white transition-all duration-150 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+                        style={{
+                          background: 'linear-gradient(to right, #F2322E 0%, #AA1815 100%)',
+                        }}
+                        disabled={!editing}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

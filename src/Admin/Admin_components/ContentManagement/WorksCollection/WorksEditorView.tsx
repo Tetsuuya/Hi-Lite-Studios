@@ -141,7 +141,7 @@ export default function WorksEditorView({
               type="button"
               onClick={onSave}
               disabled={submitting || !form.main_image_url}
-              className="rounded-md px-6 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               style={{
                 backgroundColor: RED_LIGHT,
               }}
@@ -152,7 +152,7 @@ export default function WorksEditorView({
               type="button"
               onClick={onCancel}
               disabled={submitting}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:shadow-md hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+              className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:shadow-md hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
             >
               Cancel
             </button>

@@ -33,7 +33,7 @@ export default function WhatWeDoForm({
                 type="button"
                 onClick={onSubmit}
                 disabled={submitting}
-                className="rounded px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg px-5 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ backgroundColor: '#1E40AF' }}
               >
                 {submitting ? 'Saving...' : 'Save'}
@@ -42,7 +42,7 @@ export default function WhatWeDoForm({
                 type="button"
                 onClick={onCancel}
                 disabled={submitting}
-                className="rounded border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                className="rounded-lg border border-gray-300 px-5 py-2 text-xs font-semibold text-gray-700 transition-all duration-150 hover:bg-gray-50 hover:shadow-sm disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -51,8 +51,8 @@ export default function WhatWeDoForm({
             <button
               type="button"
               onClick={onEditToggle}
-              className="rounded px-4 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90"
-              style={{ backgroundColor: '#1E40AF' }}
+              className="rounded-lg px-5 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105"
+              style={{ backgroundColor: '#D42724' }}
             >
               Edit
             </button>

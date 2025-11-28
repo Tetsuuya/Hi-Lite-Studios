@@ -137,7 +137,7 @@ export default function AddNewProject() {
         <button
           type="button"
           onClick={handleCancel}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
         >
           Cancel
         </button>
@@ -280,7 +280,7 @@ export default function AddNewProject() {
             type="button"
             onClick={handleSave}
             disabled={submitting || !form.main_image_url}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? 'Saving...' : 'Save'}
           </button>
@@ -288,7 +288,7 @@ export default function AddNewProject() {
             type="button"
             onClick={handleCancel}
             disabled={submitting}
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
@@ -299,7 +299,7 @@ export default function AddNewProject() {
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">Add Media</h2>
-          <label className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">
+          <label className="inline-flex cursor-pointer items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">
             <span>{uploadingMedia ? 'Uploading...' : 'Add Media'}</span>
             <input
               type="file"

@@ -16,13 +16,13 @@ export default function StaffList({ staff, onDelete, disabled = false }: StaffLi
       {staff.map((member) => (
         <li
           key={member.id}
-          className="flex items-center justify-between rounded-md border border-gray-200 px-3 py-2"
+          className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2"
         >
           <span className="text-sm font-medium text-gray-900">{member.name}</span>
           <button
             type="button"
             onClick={() => onDelete(member.id)}
-            className="rounded-md bg-red-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={disabled}
           >
             Delete
