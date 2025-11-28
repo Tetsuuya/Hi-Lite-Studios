@@ -178,8 +178,28 @@ export default memo(function BlogEditorView({
           </label>
         </div>
         <div className="rounded-lg border border-gray-300 bg-white relative overflow-visible">
+          {/* External heading size control */}
+          <div className="flex items-center gap-2 px-2 pt-2">
+            <label className="text-xs text-gray-600">Heading:</label>
+            <select
+              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700 shadow-sm focus:border-[#291471] focus:outline-none focus:ring-1 focus:ring-[#291471]"
+              onChange={(e) => {
+                const val = e.target.value
+                if ((window as any).__currentQuill) {
+                  (window as any).__currentQuill.format('header', val === 'normal' ? false : Number(val))
+                }
+              }}
+              defaultValue="normal"
+            >
+              <option value="normal">Normal</option>
+              <option value="1">Heading 1</option>
+              <option value="2">Heading 2</option>
+              <option value="3">Heading 3</option>
+            </select>
+          </div>
           <RichTextEditor
             value={form.content}
+            onReady={(q) => { (window as any).__currentQuill = q }}
             onChange={(value) =>
               onChangeField('content')({
                 target: { value, type: 'text' } as any,

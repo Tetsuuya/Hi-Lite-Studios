@@ -2,13 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useCallback, memo } from 'react'
 import type { TeamMember } from '@/supabase/supabase_services/Content_Management/aboutUs'
 import { useAboutStore } from '@/store/aboutStore'
-import BlueBorder from '@/assets/images/BorderBlue.png'
 import IndoorIcon from '@/assets/images/ServiceIndoor.png'
 import OutdoorIcon from '@/assets/images/ServiceOutdoor.png'
 import VideoIcon from '@/assets/images/ServiceVid.png'
 import ServiceLogo from '@/assets/images/ServiceLogo.png'
 import BorderStar from '@/assets/images/BorderStar.png'
 import HeaderTitle from '@/assets/images/AboutUS_Title.svg'
+import StarService from '@/assets/images/ServiceStar.png'
+import Wordmark from '@/assets/images/Wordmark.png'
+import StarWhite from '@/assets/images/StarWhite.png'
 
 interface ServiceCard {
   id: string
@@ -82,94 +84,129 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Back Button */}
-      <div className="pt-2 pl-6">
-        <button
-          type="button"
-          onClick={() => navigate('/')}
-          className="rounded-ee-2xl rounded-tl-2xl border border-[#222222] px-6 py-2 text-sm font-semibold text-[#333333] transition hover:bg-[#222222] hover:text-white"
-        >
-          ← Back to Home
-        </button>
-      </div>
-
       {/* About Us Header */}
-      <section className="relative w-full bg-white py-0 px-6">
+      <section className="relative w-full bg-white py-4 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <img src={HeaderTitle} alt="About Us Header" className="w-full max-w-4xl mx-auto h-auto" />
         </div>
       </section>
 
+      <div className="relative w-full flex flex-col items-center pt-6 pb-6">
+        {/* Top line */}
+        <div className="relative w-full mb-8">
+            <div className="h-0.5 w-full bg-yellow-500" />
+            <img
+            src={StarService}
+            alt="star-service"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16"
+            />
+        </div>
+      </div>
+
       {/* Full Image Section */}
-      <section className="relative w-full bg-white py-4 px-6 flex items-center justify-center">
-        <div className="max-w-3xl w-full">
+      <section className="relative w-full bg-white px-6 flex items-center justify-center">
+        <div className="relative max-w-3xl w-full pb-32"> {/* add bottom padding */}
           {loading || !aboutData?.main_image_url ? (
             <div className="w-full aspect-video bg-gray-200 rounded-lg animate-pulse" />
           ) : (
-            <img
-              src={aboutData.main_image_url}
-              alt="About Hi-Lite Studio"
-              className="w-full h-auto object-contain rounded-lg"
-            />
+            <>
+              <img
+                src={aboutData.main_image_url}
+                alt="About Hi-Lite Studio"
+                className="w-full h-auto object-contain rounded-lg"
+              />
+              <div className="absolute bottom-0 left-0 w-full h-80 bg-linear-to-t from-white via-white to-transparent pointer-events-none" />
+              <img
+                src={Wordmark}
+                alt="Wordmark"
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 h-50 w-auto"
+              />
+            </>
           )}
         </div>
       </section>
 
       {/* Description Section */}
       <section className="w-full bg-white py-4 px-6">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-xl leading-relaxed text-gray-800 text-justify">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xl leading-relaxed text-[#291471] text-justify">
             {aboutData?.description || 'At Hi-Lite Studio, we create photographs and videos that feel genuine, warm, and intentional. Based in Cagayan de Oro, we specialize in capturing stories—whether for families, students, or organizations—through a blend of technical precision and emotional depth. Every project is shaped by our passion for storytelling and our commitment to delivering timeless, meaningful visuals.'}
           </p>
         </div>
       </section>
 
-      {/* Blue Border */}
-      <div className="w-full">
-        <img src={BlueBorder} alt="border" className="w-full object-cover" />
-      </div>
+      <div className="relative w-full flex flex-col items-center pt-10 pb-16">
+        {/* Top line */}
+        <div className="relative w-full mb-8">
+            <div className="h-0.5 w-full bg-yellow-500" />
+            <img
+            src={StarService}
+            alt="star-service"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16"
+            />
+        </div>
 
       {/* Meet The Team Section */}
-      <section className="relative w-full bg-white py-16 px-6">
+      <section className="relative w-full bg-white py-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-left mb-12">
-            <h2 className="text-4xl font-bold text-[#291471] mb-4">
+          <div className="text-left mb-8">
+            <h2 className="text-7xl font-bold bg-linear-to-r from-[#FBC93D] to-[#FF8000] bg-clip-text text-transparent mb-2">
               {aboutData?.meet_team_title || 'Meet The Team'}
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-xl font-light bg-linear-to-r from-[#FBC93D] to-[#FF8000] bg-clip-text text-transparent">
               {aboutData?.meet_team_subtitle || 'The talented people behind Hi-Lite Studio'}
             </p>
           </div>
 
-          {/* Team Members Grid */}
-          <TeamMembersGrid loading={loading} members={teamMembers} />
-        </div>
-      </section>
+          {/* Team Names Strip */}
+            <div className="w-full mb-8">
+              <div className="w-screen overflow-x-hidden relative left-1/2 -translate-x-1/2">
+                <div className="flex bg-[#FBC93D] py-4 items-center justify-center">
+                  {(teamMembers.length
+                    ? teamMembers.map((m) => m.name)
+                    : ['Team Member 1', 'Team Member 2', 'Team Member 3', 'Team Member 4']
+                  ).map((name, idx, arr) => (
+                    <div key={`${name}-${idx}`} className="flex items-center">
+                      <span className="text-white text-3xl whitespace-nowrap px-8">
+                        {name}
+                      </span>
 
-      {/* Blue Border */}
-      <div className="w-full">
-        <img src={BlueBorder} alt="border" className="w-full object-cover" />
-      </div>
+                      {idx < arr.length - 1 && (
+                        <img
+                          src={StarWhite}
+                          alt="star"
+                          className="w-18 h-18 mx-4"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            </div>
+          </section>
 
       {/* What We Do Section */}
       <section className="relative w-full bg-white py-2 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-left mb-2">
-            <h2 className="text-4xl font-bold text-[#291471] mb-4">
+            <h2 className="text-7xl font-bold bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent mb-6">
               {aboutData?.what_we_do_title || 'What We Do'}
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl text-justify">
-              {aboutData?.what_we_do_description || 'Our work blends technical craftsmanship with a deep appreciation for the people and stories behind every shot.'}
+            <p className="text-xl bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent text-justify w-full">
+              {aboutData?.what_we_do_description ||
+                'Our work blends technical craftsmanship with a deep appreciation for the people and stories behind every shot.'}
             </p>
           </div>
         </div>
       </section>
 
+
       {/* Services Section */}
       <section className="relative w-full bg-white py-2 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-left mb-4">
-            <p className="text-lg text-gray-600">
+          <div className="text-left mb-10">
+            <p className="text-xl bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent max-w-3xl text-justify">
               We offer three main services:
             </p>
           </div>
@@ -195,8 +232,9 @@ const About = () => {
         />
       )}
     </div>
+  </div>
   )
-}
+} 
 
 // Memoized sub-components to prevent unnecessary re-renders
 
