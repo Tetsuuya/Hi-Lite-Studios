@@ -1,5 +1,6 @@
 import { memo, type ChangeEvent } from 'react'
 import RichTextEditor from '@/components/common/RichTextEditor'
+import { AdminEngagementPanel } from './AdminEngagementPanel'
 import type {
   BlogStatus,
 } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
@@ -32,6 +33,7 @@ interface BlogEditorViewProps {
   onSave: () => Promise<void> | void
   onCancel: () => void
   onDeleteCurrent?: () => Promise<void> | void
+  selectedStoryId?: number
 }
 
 export default memo(function BlogEditorView({
@@ -46,9 +48,10 @@ export default memo(function BlogEditorView({
   onSave,
   onCancel,
   onDeleteCurrent,
+  selectedStoryId,
 }: BlogEditorViewProps) {
   return (
-    <div className="mt-6 space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="mt-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
@@ -172,7 +175,7 @@ export default memo(function BlogEditorView({
         </button>
         <div className="flex items-center gap-3">
           <button
-            type="button"
+            type="submit"
             onClick={onSave}
             disabled={saving}
             className="rounded-full bg-[#291471] px-6 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-[#1e0f55] disabled:cursor-not-allowed disabled:bg-gray-400"
@@ -187,6 +190,14 @@ export default memo(function BlogEditorView({
           </button>
         </div>
       </div>
+
+      {/* Horizontal divider */}
+      <div className="h-px bg-gray-300"></div>
+
+      {/* Engagement Panel - Only show in edit mode */}
+      {mode === 'edit' && selectedStoryId && (
+        <AdminEngagementPanel blogStoryId={selectedStoryId} />
+      )}
     </div>
   )
 })

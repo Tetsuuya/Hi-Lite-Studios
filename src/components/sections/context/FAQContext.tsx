@@ -51,8 +51,9 @@ export function FAQProvider({ children }: { children: ReactNode }) {
   const addItem: FAQContextValue['addItem'] = async (input) => {
     try {
       setError(null)
-      await createFAQ(input)
-      await refreshItems()
+      const newFAQ = await createFAQ(input)
+      // Add to local state instead of refetching all
+      setItems((prev) => [newFAQ, ...prev])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add FAQ')
       console.error('Error adding FAQ:', err)
@@ -64,7 +65,14 @@ export function FAQProvider({ children }: { children: ReactNode }) {
     try {
       setError(null)
       await updateFAQ(id, input)
-      await refreshItems()
+      // Update local state instead of refetching all
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? { ...item, ...input }
+            : item,
+        ),
+      )
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update FAQ')
       console.error('Error updating FAQ:', err)
@@ -76,7 +84,8 @@ export function FAQProvider({ children }: { children: ReactNode }) {
     try {
       setError(null)
       await deleteFAQ(id)
-      await refreshItems()
+      // Remove from local state instead of refetching all
+      setItems((prev) => prev.filter((item) => item.id !== id))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete FAQ')
       console.error('Error deleting FAQ:', err)

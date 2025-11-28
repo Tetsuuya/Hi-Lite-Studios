@@ -11,6 +11,7 @@ interface WorksState {
   // List view
   items: Work[]
   loading: boolean
+  hasMore: boolean
   error: string | null
 
   // Single work view
@@ -18,7 +19,8 @@ interface WorksState {
   workLoading: boolean
 
   // Actions
-  fetchItems: () => Promise<void>
+  fetchItems: (limit?: number) => Promise<void>
+  loadMore: (limit?: number) => Promise<void>
   fetchWorkById: (id: string) => Promise<WorkWithMedia | null>
   clearCache: () => void
 }
@@ -28,23 +30,44 @@ export const useWorksStore = create<WorksState>()(
     // Initial state
     items: [],
     loading: true,
+    hasMore: true,
     error: null,
     workCache: new Map(),
     workLoading: false,
 
-    // Fetch all works (list view)
-    fetchItems: async () => {
+    // Fetch initial works (lazy load first batch)
+    fetchItems: async (limit = 8) => {
       set({ loading: true, error: null })
       try {
         const works = await fetchAllWorks()
         set({
-          items: works,
+          items: works.slice(0, limit),
+          hasMore: works.length > limit,
           loading: false,
         })
       } catch (err: any) {
         set({
           error: err.message ?? 'Failed to load works',
           loading: false,
+        })
+      }
+    },
+
+    // Load more works (lazy loading on demand)
+    loadMore: async (limit = 8) => {
+      const { items } = get()
+      const currentLength = items.length
+
+      try {
+        const works = await fetchAllWorks()
+        const newItems = works.slice(0, currentLength + limit)
+        set({
+          items: newItems,
+          hasMore: works.length > newItems.length,
+        })
+      } catch (err: any) {
+        set({
+          error: err.message ?? 'Failed to load more works',
         })
       }
     },
@@ -78,6 +101,7 @@ export const useWorksStore = create<WorksState>()(
         items: [],
         workCache: new Map(),
         error: null,
+        hasMore: true,
       })
     },
   })),

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useFAQ } from '@/context/FAQContext'
+import { useFAQ } from '@/components/sections/context/FAQContext'
 import FAQCard from '@/components/cards/FAQCards'
 
 const FAQ = () => {

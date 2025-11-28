@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useFAQ, type FAQItem } from '@/context/FAQContext'
+import { useFAQ, type FAQItem } from '@/components/sections/context/FAQContext'
 import FAQCard from '@/components/cards/FAQCards'
 
 const emptyForm = {
