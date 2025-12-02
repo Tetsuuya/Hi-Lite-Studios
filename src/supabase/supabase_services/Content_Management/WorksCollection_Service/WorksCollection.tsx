@@ -10,6 +10,7 @@ export interface Work {
   label_1: WorkLabel | null
   label_2: WorkLabel | null
   date: string | null
+  title: string | null
   status: WorkStatus
   created_at: string
   updated_at: string
@@ -37,6 +38,7 @@ export interface NewWorkInput {
   label_1?: WorkLabel | null
   label_2?: WorkLabel | null
   date?: string | null
+  title?: string | null
   status?: WorkStatus
 }
 
@@ -46,6 +48,7 @@ export interface UpdateWorkInput {
   label_1?: WorkLabel | null
   label_2?: WorkLabel | null
   date?: string | null
+  title?: string | null
   status?: WorkStatus
 }
 
@@ -53,7 +56,7 @@ export interface UpdateWorkInput {
 export async function fetchAllWorks() {
   const { data, error } = await supabase
     .from(TABLE_NAME)
-    .select('id, main_image_url, description, label_1, label_2, date, status, created_at, updated_at')
+    .select('id, main_image_url, description, label_1, label_2, date, title, status, created_at, updated_at')
     .order('date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
 
@@ -65,7 +68,7 @@ export async function fetchAllWorks() {
 export async function fetchPublishedWorks() {
   const { data, error } = await supabase
     .from(TABLE_NAME)
-    .select('id, main_image_url, description, label_1, label_2, date, status, created_at, updated_at')
+    .select('id, main_image_url, description, label_1, label_2, date, title, status, created_at, updated_at')
     .eq('status', 'published')
     .order('date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
@@ -113,6 +116,7 @@ export async function createWork(input: NewWorkInput) {
       label_1: input.label_1 ?? null,
       label_2: input.label_2 ?? null,
       date: input.date ?? null,
+      title: input.title ?? null,
       status: input.status ?? 'draft',
     })
     .select()
@@ -131,6 +135,7 @@ export async function updateWork(id: string, updates: UpdateWorkInput) {
       label_1: updates.label_1,
       label_2: updates.label_2,
       date: updates.date,
+      title: updates.title,
       status: updates.status,
     })
     .eq('id', id)

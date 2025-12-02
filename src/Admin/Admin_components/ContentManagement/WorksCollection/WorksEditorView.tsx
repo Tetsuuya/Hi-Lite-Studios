@@ -13,6 +13,7 @@ interface WorksEditorViewProps {
     description: string
     label_1: WorkLabel | ''
     date: Date | null
+    title: string
     status: 'draft' | 'published'
   }
   selectedWorkMedia: WorkMedia[]
@@ -170,6 +171,20 @@ export default function WorksEditorView({
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Title Field */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-800">TITLE</label>
+              <input
+                type="text"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
+                          focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100"
+                value={form.title}
+                onChange={(e) => onChangeField('title', e.target.value)}
+                placeholder="Enter title..."
+                disabled={submitting || deleting}
+              />
             </div>
 
             {/* Save Buttons */}

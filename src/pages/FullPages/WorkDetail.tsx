@@ -110,7 +110,13 @@ const WorkDetail = () => {
 
           {/* Right Column */}
           <div className="space-y-4">
-            <h1 className="text-5xl font-semibold text-[#333333]">{work.label_1 || 'Work'}</h1>
+            {work.title && (
+              <h1 className="text-5xl font-semibold text-[#333333]">{work.title}</h1>
+            )}
+            
+            {work.label_1 && (
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">{work.label_1}</p>
+            )}
 
             {work.label_2 && (
               <div className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF8000]">

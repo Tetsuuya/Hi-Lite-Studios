@@ -23,6 +23,7 @@ const emptyForm = {
   description: '',
   label_1: '' as WorkLabel | '',
   date: null as Date | null,
+  title: '',
   status: 'draft' as WorkStatus,
 }
 
@@ -91,6 +92,7 @@ export default function WorksCollection() {
       description: work.description || '',
       label_1: (work.label_1 as WorkLabel) || '',
       date: work.date ? new Date(work.date) : null,
+      title: work.title || '',
       status: work.status || 'draft',
     })
     // Load media immediately here instead of waiting for useEffect
@@ -238,6 +240,7 @@ export default function WorksCollection() {
         label_1: (form.label_1 as WorkLabel) || null,
         label_2: null,
         date: form.date ? form.date.toISOString().split('T')[0] : null,
+        title: form.title || null,
         status,
       }
 

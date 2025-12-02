@@ -250,16 +250,22 @@ const RecentWorks = () => {
                     <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
                       <img
                         src={work.main_image_url || ''}
-                        alt={work.label_1 || 'Work'}
+                        alt={work.title || work.label_1 || 'Work'}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="18"%3ENo Image%3C/text%3E%3C/svg%3E'
                         }}
                       />
                     </div>
+                    {/* Title - Above Label */}
+                    {work.title && (
+                      <p className="mt-3 text-sm font-semibold text-gray-900 group-hover:text-gray-700 transition-colors">
+                        {work.title}
+                      </p>
+                    )}
                     {/* Label - Below Image */}
                     {work.label_1 && (
-                      <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-600 group-hover:text-gray-900 transition-colors">
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gray-600 group-hover:text-gray-900 transition-colors">
                         {work.label_1}
                       </p>
                     )}

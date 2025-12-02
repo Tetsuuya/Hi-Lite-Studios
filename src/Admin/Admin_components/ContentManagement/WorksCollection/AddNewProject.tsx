@@ -28,6 +28,7 @@ export default function AddNewProject() {
     label_1: '' as WorkLabel | '',
     label_2: '' as WorkLabel | '',
     date: null as Date | null,
+    title: '',
   })
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -104,6 +105,7 @@ export default function AddNewProject() {
         label_1: (form.label_1 as WorkLabel) || null,
         label_2: (form.label_2 as WorkLabel) || null,
         date: form.date ? form.date.toISOString().split('T')[0] : null,
+        title: form.title || null,
       }
 
       const newWork = await createWork(workData)
@@ -270,6 +272,18 @@ export default function AddNewProject() {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-800">TITLE</label>
+              <input
+                type="text"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                value={form.title}
+                onChange={(e) => handleChange('title', e.target.value)}
+                placeholder="Enter title..."
+                disabled={submitting}
+              />
             </div>
           </div>
         </div>
