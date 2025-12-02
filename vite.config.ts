@@ -11,4 +11,22 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'admin': [
+            './src/Admin/AdminLogin.tsx',
+            './src/Admin/AdminMain.tsx',
+          ],
+          'vendor': [
+            '@supabase/supabase-js',
+            'react-quilljs',
+            'quill',
+          ],
+        },
+      },
+    },
+  },
 })
