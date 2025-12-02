@@ -10,8 +10,7 @@
   "routes": [
     {
       "src": "/(?P<path>.*)",
-      "destination": "/index.html",
-      "status": 200
+      "dest": "/index.html"
     }
   ]
 }
