@@ -26,7 +26,6 @@ export default function InfiniteStrip() {
     const speed = 0.8 // pixels per frame
 
     const seqWidth = () => seq.getBoundingClientRect().width
-    const containerWidth = () => container.getBoundingClientRect().width
 
     const third = seq.cloneNode(true) as HTMLDivElement
     third.setAttribute('aria-hidden', 'true')
