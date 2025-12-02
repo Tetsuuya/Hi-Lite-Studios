@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import {
-  fetchAllWorks,
+  fetchPublishedWorks,
   fetchWorkWithMedia,
   type Work,
   type WorkWithMedia,
@@ -39,7 +39,7 @@ export const useWorksStore = create<WorksState>()(
     fetchItems: async (limit = 8) => {
       set({ loading: true, error: null })
       try {
-        const works = await fetchAllWorks()
+        const works = await fetchPublishedWorks()
         set({
           items: works.slice(0, limit),
           hasMore: works.length > limit,
@@ -59,7 +59,7 @@ export const useWorksStore = create<WorksState>()(
       const currentLength = items.length
 
       try {
-        const works = await fetchAllWorks()
+        const works = await fetchPublishedWorks()
         const newItems = works.slice(0, currentLength + limit)
         set({
           items: newItems,

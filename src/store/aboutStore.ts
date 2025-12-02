@@ -42,8 +42,18 @@ export const useAboutStore = create<AboutState>()(
       // Fetch about data and team members
       fetchAboutData: async () => {
         set({ loading: true, error: null })
+        
+        // Add 10-second timeout to prevent infinite loading
+        const timeoutId = setTimeout(() => {
+          set({ 
+            loading: false, 
+            error: 'Loading took too long. Please refresh the page.' 
+          })
+        }, 10000)
+        
         try {
           const aboutData = await fetchAboutUs()
+          clearTimeout(timeoutId)
           
           if (aboutData?.id) {
             const teamMembers = await fetchTeamMembers(aboutData.id)
@@ -52,6 +62,7 @@ export const useAboutStore = create<AboutState>()(
             set({ aboutData, teamMembers: [], loading: false })
           }
         } catch (err: any) {
+          clearTimeout(timeoutId)
           set({
             error: err.message ?? 'Failed to load about data',
             loading: false,

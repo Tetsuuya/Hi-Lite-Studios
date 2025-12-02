@@ -8,6 +8,7 @@ import {
   deleteBlogStory,
   pinBlogStory,
   unpinBlogStory,
+  archiveBlogStory,
   type BlogStory,
   type NewBlogStoryInput,
   type UpdateBlogStoryInput,
@@ -39,6 +40,7 @@ interface AdminBlogState {
   saveDraft: (id: number, updates?: UpdateBlogStoryInput) => Promise<BlogStory | null>
   deleteStory: (id: number) => Promise<boolean>
   togglePin: (id: number, isPinned: boolean) => Promise<boolean>
+  archiveStory: (id: number) => Promise<BlogStory | null>
   setEditingStory: (story: BlogStory | null) => void
   clearError: () => void
 }
@@ -134,12 +136,17 @@ export const useAdminBlogStore = create<AdminBlogState>()(
       set({ saving: true, error: null })
       try {
         const updatedStory = await updateBlogStory(id, updates)
-        set((state) => ({
-          stories: state.stories.map((s) => (s.id === id ? updatedStory : s)),
-          editingStory: updatedStory,
-          saving: false,
-        }))
-        // Sync with magazine store and invalidate cache
+        set((state) => {
+          const newCache = new Map(state.storyCache)
+          newCache.set(id, updatedStory)
+          return {
+            stories: state.stories.map((s) => (s.id === id ? updatedStory : s)),
+            editingStory: updatedStory,
+            saving: false,
+            storyCache: newCache,
+          }
+        })
+        // Sync with magazine store
         useMagazineStore.getState().updateItem(id.toString(), updatedStory)
         return updatedStory
       } catch (err: any) {
@@ -156,11 +163,16 @@ export const useAdminBlogStore = create<AdminBlogState>()(
       set({ saving: true, error: null })
       try {
         const updatedStory = await updateBlogStory(id, { ...updates, status: 'draft' })
-        set((state) => ({
-          stories: state.stories.map((s) => (s.id === id ? updatedStory : s)),
-          editingStory: updatedStory,
-          saving: false,
-        }))
+        set((state) => {
+          const newCache = new Map(state.storyCache)
+          newCache.set(id, updatedStory)
+          return {
+            stories: state.stories.map((s) => (s.id === id ? updatedStory : s)),
+            editingStory: updatedStory,
+            saving: false,
+            storyCache: newCache,
+          }
+        })
         useMagazineStore.getState().updateItem(id.toString(), updatedStory)
         return updatedStory
       } catch (err: any) {
@@ -199,10 +211,6 @@ export const useAdminBlogStore = create<AdminBlogState>()(
       set({ error: null })
       
       // Optimistic update: immediately flip the pin status in UI
-      const optimisticStory = {
-        newIsPinned: !isPinned,
-      }
-      
       set((state) => ({
         stories: state.stories.map((s) => 
           s.id === id ? { ...s, is_pinned: !s.is_pinned } : s
@@ -238,6 +246,28 @@ export const useAdminBlogStore = create<AdminBlogState>()(
           error: err.message ?? 'Failed to update pin status',
         }))
         return false
+      }
+    },
+
+    // Archive story (set status to 'archived')
+    archiveStory: async (id: number) => {
+      set({ saving: true, error: null })
+      try {
+        const archivedStory = await archiveBlogStory(id)
+        set((state) => ({
+          stories: state.stories.map((s) => (s.id === id ? archivedStory : s)),
+          editingStory: null,
+          saving: false,
+        }))
+        // Sync with magazine store
+        useMagazineStore.getState().updateItem(id.toString(), archivedStory)
+        return archivedStory
+      } catch (err: any) {
+        set({
+          error: err.message ?? 'Failed to archive story',
+          saving: false,
+        })
+        return null
       }
     },
 

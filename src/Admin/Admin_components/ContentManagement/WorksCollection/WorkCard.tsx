@@ -48,6 +48,15 @@ export default function WorkCard({ work, onEdit }: WorkCardProps) {
           </button>
         </div>
       </div>
+
+      {/* Title Display - Below Image */}
+      {work.title && (
+        <div className="px-4 py-3 border-b border-gray-100">
+          <h3 className="text-sm font-semibold text-gray-900 truncate">
+            {work.title}
+          </h3>
+        </div>
+      )}
     </article>
   )
 }

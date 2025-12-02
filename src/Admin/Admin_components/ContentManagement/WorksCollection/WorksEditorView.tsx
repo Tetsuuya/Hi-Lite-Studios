@@ -12,8 +12,8 @@ interface WorksEditorViewProps {
     main_image_url: string
     description: string
     label_1: WorkLabel | ''
-    label_2: string
     date: Date | null
+    title: string
     status: 'draft' | 'published'
   }
   selectedWorkMedia: WorkMedia[]
@@ -61,7 +61,7 @@ export default function WorksEditorView({
 }: WorksEditorViewProps) {
   return (
     <div className="space-y-1">
-      {/* Top Action Bar */}
+      {/* Top Action Bar - Delete & Cancel on Right */}
       <div className="flex items-center justify-end gap-3 mr-6 mb-4">
         {onDeleteCurrent && (
           <button
@@ -107,25 +107,12 @@ export default function WorksEditorView({
         confirmLabel="Delete"
         cancelLabel="Cancel"
         loading={deleting}
-        onConfirm={onConfirmDelete ?? (() => {})}
-        onCancel={onCancelDelete ?? (() => {})}
+        onConfirm={onConfirmDelete || (() => {})}
+        onCancel={onCancelDelete || (() => {})}
       />
 
       {/* Main Content Form */}
       <div className="rounded-xl bg-white p-6 space-y-6">
-        {/* Title Field */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-800">TITLE</label>
-          <input
-            type="text"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100"
-            value={form.label_2 || ''}
-            onChange={(e) => onChangeField('label_2', e.target.value)}
-            placeholder="Enter project title..."
-            disabled={submitting || deleting}
-          />
-        </div>
-
         {/* Image Section */}
         <ImageUploadField
           value={form.main_image_url}
@@ -184,6 +171,20 @@ export default function WorksEditorView({
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Title Field */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-800">TITLE</label>
+              <input
+                type="text"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
+                          focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100"
+                value={form.title}
+                onChange={(e) => onChangeField('title', e.target.value)}
+                placeholder="Enter title..."
+                disabled={submitting || deleting}
+              />
             </div>
 
             {/* Save Buttons */}

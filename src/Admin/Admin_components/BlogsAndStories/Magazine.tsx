@@ -19,7 +19,7 @@ const emptyForm: BlogFormState = {
   excerpt: '',
   content: '',
   is_pinned: false,
-  status: 'published',
+  status: 'draft',
 }
 
 const slugify = (value: string) =>
@@ -30,7 +30,7 @@ const slugify = (value: string) =>
     .replace(/(^-|-$)+/g, '')
 
 export default function MagazineAdmin() {
-  const { stories, loading, error, saving, fetchStories, fetchStoryById, createStory, updateStory, deleteStory, togglePin } = useAdminBlogStore()
+  const { stories, loading, error, saving, fetchStories, fetchStoryById, createStory, updateStory, deleteStory, togglePin, archiveStory } = useAdminBlogStore()
   
   const [mode, setMode] = useState<Mode>('list')
   const [selectedStory, setSelectedStory] = useState<BlogStory | null>(null)
@@ -212,9 +212,10 @@ export default function MagazineAdmin() {
         })
         if (created) {
           setSuccessMessage(`Post ${status === 'draft' ? 'saved as draft' : 'published'}!`)
-          setTimeout(() => setSuccessMessage(null), 3000)
           resetForm()
           setMode('list')
+        } else {
+          setLocalError('Failed to create post')
         }
       } else if (mode === 'edit' && selectedStory) {
         const updated = await updateStory(selectedStory.id, {
@@ -224,13 +225,14 @@ export default function MagazineAdmin() {
           excerpt,
           content,
           is_pinned: form.is_pinned,
-          status,
+          status: status,
         })
         if (updated) {
           setSuccessMessage(`Post ${status === 'draft' ? 'saved as draft' : 'published'}!`)
-          setTimeout(() => setSuccessMessage(null), 3000)
           setSelectedStory(updated)
           setMode('list')
+        } else {
+          setLocalError('Failed to update post')
         }
       }
     } catch (err: any) {
@@ -240,7 +242,7 @@ export default function MagazineAdmin() {
   }
 
   const handleSave = async () => {
-    await handleSaveStory(form.status)
+    await handleSaveStory('published')
   }
 
   const handleCancelEdit = () => {
@@ -259,14 +261,43 @@ export default function MagazineAdmin() {
     setShowDeleteModal(true)
   }
 
+  const handleArchiveStory = useCallback(async () => {
+    if (!selectedStory) return
+    try {
+      const archived = await archiveStory(selectedStory.id)
+      if (archived) {
+        setSuccessMessage('Post archived successfully!')
+        resetForm()
+        setMode('list')
+      }
+    } catch (err: any) {
+      console.error('[BlogsAndStories] Archive error:', err)
+      setLocalError(err.message ?? 'Failed to archive post')
+    }
+  }, [selectedStory, archiveStory])
+
   const isEditing = mode === 'edit' || mode === 'create'
 
   return (
     <section className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">
-          Magazine Management
-        </h1>
+      <header className="flex items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">
+            Magazine Management
+          </h1>
+        </div>
+        {isEditing && (
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-all duration-150 shrink-0"
+            title="Close editor"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </header>
 
       {!isEditing && (
@@ -299,6 +330,7 @@ export default function MagazineAdmin() {
           onSaveDraft={handleSaveDraft}
           onCancel={handleCancelEdit}
           onDeleteCurrent={mode === 'edit' ? handleDeleteCurrentFromEditor : undefined}
+          onArchiveCurrent={mode === 'edit' ? handleArchiveStory : undefined}
           selectedStoryId={selectedStory?.id}
         />
       )}
