@@ -91,13 +91,7 @@ export default memo(function BlogEditorView({
         )}
         {mode === 'create' && (
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-700 transition-all duration-150 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
-            >
-              Archive
-            </button>
+            {/* Close button handled by parent Magazine component */}
           </div>
         )}
       </div>

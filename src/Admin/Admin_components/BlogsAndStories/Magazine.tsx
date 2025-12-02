@@ -3,7 +3,6 @@ import ConfirmModal from '@/components/ui/ConfirmModal'
 import type { BlogStory, BlogStatus } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
 import {
   uploadBlogImage,
-  archiveBlogStory,
 } from '@/supabase/supabase_services/Blogs_Stories/Blogs_stories'
 import { useAdminBlogStore } from '@/store/adminBlogStore'
 import { BLOG_ERRORS, BLOG_LABELS } from './constants'
@@ -281,10 +280,24 @@ export default function MagazineAdmin() {
 
   return (
     <section className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">
-          Magazine Management
-        </h1>
+      <header className="flex items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">
+            Magazine Management
+          </h1>
+        </div>
+        {isEditing && (
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-all duration-150 shrink-0"
+            title="Close editor"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </header>
 
       {!isEditing && (
