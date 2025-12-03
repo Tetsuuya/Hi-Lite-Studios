@@ -75,7 +75,7 @@ const MagazineArticle = () => {
 
       {/* Title and date */}
       <div className="px-4 md:px-8 max-w-6xl mx-auto w-full text-center">
-        <h2 className="text-5xl md:text-6xl font-semibold text-[#333333]">
+        <h2 className="text-5xl md:text-6xl font-bold text-[#333333]">
           {selectedItem.title}
         </h2>
         {selectedItem.created_at && (

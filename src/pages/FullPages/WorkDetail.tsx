@@ -126,7 +126,7 @@ const WorkDetail = () => {
           {/* Right Column */}
           <div className="space-y-4">
             {work.title && (
-              <h1 className="text-5xl font-semibold text-[#333333]">{work.title}</h1>
+              <h1 className="text-5xl font-bold text-[#333333]">{work.title}</h1>
             )}
             
             {work.label_1 && (
@@ -193,7 +193,7 @@ const WorkDetail = () => {
       </section>
 
         <div className="w-full text-center mb-8">
-          <h2 className="text-5xl font-semibold italic text-[#D42724]">Hi-Lite Gallery</h2>
+          <h2 className="text-5xl font-bold italic text-[#D42724]">Hi-Lite Gallery</h2>
         </div>
 
       {/* Gallery Section */}

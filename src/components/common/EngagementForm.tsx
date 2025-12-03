@@ -51,7 +51,7 @@ export const EngagementForm = ({ onSubmit, isLoading = false }: EngagementFormPr
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <h3 className="text-5xl font-semibold text-gray-900">Share Your Thoughts!</h3>
+        <h3 className="text-5xl font-bold text-gray-900">Share Your Thoughts!</h3>
         <p className="text-lg text-gray-600 mt-2">What did you think about the story?</p>
       </div>
 

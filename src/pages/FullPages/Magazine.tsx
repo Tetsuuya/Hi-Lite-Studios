@@ -76,7 +76,7 @@ const Magazine = () => {
       <div className="flex w-full flex-col gap-12 px-22">
         {/* Header with Title and Divider */}
         <div className="flex flex-col items-center gap-2 text-center">
-              <h1 className="flex items-center justify-center gap-1 text-7xl md:text-7xl font-semibold text-[#333333]">
+              <h1 className="flex items-center justify-center gap-1 text-7xl md:text-7xl font-bold text-[#333333]">
                 <span>Hi‑Lite</span>
                 <img
                   src={StarBlack}
