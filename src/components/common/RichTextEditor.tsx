@@ -22,7 +22,6 @@ const formats = [
   'bold',
   'italic',
   'list',
-  'bullet',
   'link',
   'image',
 ]

@@ -180,11 +180,13 @@ export default memo(function BlogEditorView({
           <RichTextEditor
             value={form.content}
             onReady={(q) => { (window as any).__currentQuill = q }}
-            onChange={(value) =>
-              onChangeField('content')({
-                target: { value, type: 'text' } as any,
-              } as any)
-            }
+            onChange={(value) => {
+              // Create a synthetic event object and call the handler
+              const event = {
+                target: { value, type: 'text' }
+              } as any
+              onChangeField('content')(event)
+            }}
           />
         </div>
       </div>
@@ -200,22 +202,26 @@ export default memo(function BlogEditorView({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => onSaveDraft ? onSaveDraft() : undefined}
+            onClick={() => {
+              if (onSaveDraft) {
+                onSaveDraft()
+              }
+            }}
             disabled={saving}
             title="Save as draft"
-            className="rounded-lg px-5 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed"
+            className="rounded-lg px-5 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
             style={{ background: BLOG_COLORS.GRAY_GRADIENT }}
           >
             {saving ? 'Saving...' : 'Save as Draft'}
           </button>
           <button
-            type="submit"
+            type="button"
             onClick={onSave}
             disabled={saving}
-            className={`rounded-lg px-6 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-400`}
+            className={`rounded-lg px-6 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-150 hover:shadow-lg hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50`}
             style={{ backgroundColor: BLOG_COLORS.PRIMARY_PURPLE }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = BLOG_COLORS.DARK_PURPLE)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = BLOG_COLORS.PRIMARY_PURPLE)}
+            onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = BLOG_COLORS.DARK_PURPLE)}
+            onMouseLeave={(e) => !saving && (e.currentTarget.style.backgroundColor = BLOG_COLORS.PRIMARY_PURPLE)}
           >
             {saving
               ? 'Saving...'

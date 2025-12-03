@@ -138,6 +138,8 @@ export default function MagazineAdmin() {
           ? (e.target as HTMLInputElement).checked
           : (e.target as HTMLInputElement).value
       setForm((prev) => ({ ...prev, [field]: value as any }))
+      // Clear error when user starts editing
+      if (localError) setLocalError(null)
     }
 
   const handleCoverUpload = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
@@ -187,13 +189,15 @@ export default function MagazineAdmin() {
       setLocalError(BLOG_ERRORS.TITLE_REQUIRED)
       return
     }
-    if (!content) {
+    
+    // Strip HTML tags and check if there's actual text content
+    const plainText = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    if (!plainText) {
       setLocalError(BLOG_ERRORS.CONTENT_REQUIRED)
       return
     }
 
     const generatedSlug = slugify(title)
-    const plainText = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
     const excerpt =
       plainText.length > 220 ? `${plainText.slice(0, 220).trimEnd()}...` : plainText
 
@@ -244,7 +248,7 @@ export default function MagazineAdmin() {
 
   const handleSave = useCallback(async () => {
     await handleSaveStory('published')
-  }, [])
+  }, [form])
 
   const handleCancelEdit = useCallback(() => {
     resetForm()
@@ -253,7 +257,7 @@ export default function MagazineAdmin() {
 
   const handleSaveDraft = useCallback(async () => {
     await handleSaveStory('draft')
-  }, [])
+  }, [form])
 
   const handleDeleteCurrentFromEditor = useCallback(async () => {
     if (!selectedStory) return
