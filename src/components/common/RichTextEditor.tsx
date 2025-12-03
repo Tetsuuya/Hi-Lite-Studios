@@ -1,5 +1,5 @@
-import { useEffect, useRef, memo } from 'react'
-import { useQuill } from 'react-quilljs'
+import { useEffect, useRef, memo, useState } from 'react'
+import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 
 interface RichTextEditorProps {
@@ -28,14 +28,28 @@ const formats = [
 ]
 
 function RichTextEditor({ value, onChange, onReady }: RichTextEditorProps) {
-  const { quill, quillRef } = useQuill({
-    modules,
-    formats,
-    theme: 'snow',
-  })
+  const quillRef = useRef<HTMLDivElement>(null)
+  const [quill, setQuill] = useState<Quill | null>(null)
 
   const isInitializingRef = useRef(false)
   const lastValueRef = useRef('')
+
+  // Initialize Quill only once
+  useEffect(() => {
+    if (quillRef.current && !quill) {
+      const quillInstance = new Quill(quillRef.current, {
+        modules,
+        formats,
+        theme: 'snow',
+      })
+      
+      setQuill(quillInstance)
+      
+      if (onReady) {
+        onReady(quillInstance)
+      }
+    }
+  }, [quill, onReady])
 
   // Load initial / external value into editor (only once at start and when explicitly changed from outside)
   useEffect(() => {
@@ -64,9 +78,6 @@ function RichTextEditor({ value, onChange, onReady }: RichTextEditorProps) {
   useEffect(() => {
     if (!quill) return
 
-    // Expose quill to parent if requested
-    if (onReady) onReady(quill)
-
     const handler = () => {
       const newContent = quill.root.innerHTML
       lastValueRef.current = newContent
@@ -77,7 +88,7 @@ function RichTextEditor({ value, onChange, onReady }: RichTextEditorProps) {
     return () => {
       quill.off('text-change', handler)
     }
-  }, [quill, onChange, onReady])
+  }, [quill, onChange])
 
   return <div ref={quillRef} />
 }
