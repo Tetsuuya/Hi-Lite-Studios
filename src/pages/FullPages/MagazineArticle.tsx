@@ -47,39 +47,39 @@ const MagazineArticle = () => {
   }
 
   return (
-    <div className="page-fade min-h-screen bg-white py-12">
+    <div className="page-fade min-h-screen bg-white py-6 sm:py-12">
       {/* Divider line */}
-      <div className="relative w-full flex flex-col items-center pt-6">
-        <div className="relative w-screen left-1/2 -translate-x-1/2 mb-12">
+      <div className="relative w-full flex flex-col items-center pt-3 sm:pt-6">
+        <div className="relative w-screen left-1/2 -translate-x-1/2 mb-6 sm:mb-12">
           <div className="h-0.5 w-screen bg-black" />
           <img
             src={StarBlack}
             alt="star-black"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16"
           />
         </div>
       </div>
 
       {/* Close button */}
-      <div className="relative px-4 md:px-8">
+      <div className="relative px-3 sm:px-4 md:px-8">
         <button
           type="button"
           onClick={() => navigate('/magazine')}
           aria-label="Close"
           title="Close"
-          className="absolute right-4 md:right-20 top-0 w-16 h-16 text-[#222222] flex items-center justify-center hover:text-[#111111] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#222222] transition transform hover:scale-105 active:scale-95"
+          className="absolute right-3 sm:right-4 md:right-20 top-0 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-[#222222] flex items-center justify-center hover:text-[#111111] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#222222] transition transform hover:scale-105 active:scale-95"
         >
-          <IconX className="w-8 h-8" />
+          <IconX className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
         </button>
       </div>
 
       {/* Title and date */}
-      <div className="px-4 md:px-8 max-w-6xl mx-auto w-full text-center">
-        <h2 className="text-5xl md:text-6xl font-bold text-[#333333]">
+      <div className="px-3 sm:px-4 md:px-8 max-w-6xl mx-auto w-full text-center">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#333333]">
           {selectedItem.title}
         </h2>
         {selectedItem.created_at && (
-          <p className="mt-2 text-base md:text-lg text-[#2f7a35] font-medium">
+          <p className="mt-2 sm:mt-3 md:mt-4 text-xs sm:text-sm md:text-base lg:text-lg text-[#2f7a35] font-medium">
             <span className="text-[#0d7123] mr-2">Published:</span>
             <span className="text-[#555555] font-medium">
               {new Date(selectedItem.created_at as any).toLocaleDateString(
@@ -92,11 +92,11 @@ const MagazineArticle = () => {
       </div>
 
       {/* Cover image */}
-      <div className="w-full flex justify-center py-10 px-4 md:px-8">
+      <div className="w-full flex justify-center py-6 sm:py-8 md:py-10 px-3 sm:px-4 md:px-8">
         <img
           src={selectedItem.cover_image || ''}
           alt={selectedItem.title}
-          className="max-w-3xl w-full h-auto object-contain rounded-xl"
+          className="max-w-3xl w-full h-auto object-contain rounded-lg sm:rounded-xl"
         />
       </div>
 
@@ -107,7 +107,7 @@ const MagazineArticle = () => {
 
       {/* Content */}
       <div
-        className="text-lg md:text-xl leading-relaxed text-[#333333] w-full px-4 md:px-50 mt-8 mb-10"
+        className="text-base sm:text-lg md:text-xl leading-relaxed text-[#333333] w-full px-3 sm:px-6 md:px-12 lg:px-50 mt-6 sm:mt-8 mb-8 sm:mb-10"
       >
         <style>{`
           .prose-content img {
@@ -139,7 +139,7 @@ const MagazineArticle = () => {
       </div>
 
       {/* Feedback Section */}
-      <div className="max-w-6xl mx-auto space-y-10 px-4 md:px-6">
+      <div className="max-w-6xl mx-auto space-y-6 sm:space-y-10 px-3 sm:px-6 md:px-8">
         {/* Blue strip */}
         <div className="relative w-screen left-1/2 -translate-x-1/2">
           <img src={BorderBlue} alt="border-blue" className="w-screen h-auto" />
@@ -158,12 +158,12 @@ const MagazineArticle = () => {
         />
 
         {/* Divider line */}
-        <div className="relative w-screen left-1/2 -translate-x-1/2 mb-10">
+        <div className="relative w-screen left-1/2 -translate-x-1/2 mb-6 sm:mb-10">
             <div className="h-0.5 w-screen bg-black" />
             <img
                 src={StarBlack}
                 alt="star-black"
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16"
             />
             </div>
 

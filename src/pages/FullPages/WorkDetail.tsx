@@ -198,15 +198,17 @@ const WorkDetail = () => {
 
       {/* Gallery Section */}
       {work.media && work.media.length > 0 && (
-        <section className="px-8 md:px-10 max-w-6xl mx-auto mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="px-4 sm:px-6 md:px-8 max-w-6xl mx-auto mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-6">
             {work.media.map((media) => (
-              <div key={media.id} className="overflow-hidden rounded-xl bg-gray-100">
-                <img
-                  src={media.image_url}
-                  alt="Gallery"
-                  className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
-                />
+              <div key={media.id} className="flex flex-col cursor-pointer group">
+                <div className="aspect-square w-full bg-gray-100 overflow-hidden rounded-lg">
+                  <img
+                    src={media.image_url}
+                    alt="Gallery"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
               </div>
             ))}
           </div>

@@ -82,9 +82,9 @@ const BookingForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-[1.2fr,0.8fr]">
+    <form onSubmit={handleSubmit} className="grid gap-6 sm:gap-8 lg:grid-cols-[1.2fr,0.8fr]">
       {/* name fields */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
         <InputField
           label="First Name*"
           placeholder="Rhenel"
@@ -100,7 +100,7 @@ const BookingForm = () => {
       </div>
 
       {/* email + inquiry type */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
         <InputField
           label="Email*"
           placeholder="you@email.com"
@@ -109,14 +109,14 @@ const BookingForm = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <div className="space-y-2">
-          <label className="text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">
+          <label className="text-xs sm:text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">
             Type of Inquiry*
           </label>
           <div className="relative">
             <select
               value={inquiryType}
               onChange={(e) => setInquiryType(e.target.value)}
-              className="w-full appearance-none rounded-lg border border-[#d7d7d7] px-4 py-3 text-sm text-[#2f2f2f] focus:border-[#291471] focus:outline-none focus:ring-2 focus:ring-[#4f80eb]"
+              className="w-full appearance-none rounded-lg border border-[#d7d7d7] px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-[#2f2f2f] focus:border-[#291471] focus:outline-none focus:ring-2 focus:ring-[#4f80eb]"
             >
               <option value="" disabled hidden>
                 Select inquiry type
@@ -135,14 +135,14 @@ const BookingForm = () => {
       </div>
 
       {/* description + calendar */}
-      <div className="flex gap-4 items-stretch">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-stretch">
         {/* Textarea column */}
         <div className="flex-1 flex flex-col">
-          <label className="text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">
+          <label className="text-xs sm:text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">
             Description*
           </label>
           <textarea
-            className="w-full flex-1 rounded-lg border border-[#d7d7d7] px-4 py-3 text-md text-[#2f2f2f] 
+            className="w-full flex-1 rounded-lg border border-[#d7d7d7] px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-[#2f2f2f] 
                        focus:border-[#291471] focus:outline-none focus:ring-2 focus:ring-[#4f80eb]"
             placeholder="Tell us about your project, schedule, or any special details."
             value={description}
@@ -151,11 +151,11 @@ const BookingForm = () => {
         </div>
 
         {/* Calendar column */}
-        <div className="w-80 flex flex-col">
-          <label className="text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">
+        <div className="w-full sm:w-80 lg:w-80 flex flex-col">
+          <label className="text-xs sm:text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">
             Preferred Date*
           </label>
-          <div className="flex-1 rounded-2xl border border-[#dcdcdc] p-2 flex justify-center">
+          <div className="flex-1 rounded-2xl border border-[#dcdcdc] p-1 sm:p-2 flex justify-center overflow-x-auto">
             <Calendar 
               mode="single" 
               selected={date} 
@@ -170,26 +170,26 @@ const BookingForm = () => {
               }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-2">Only future dates are available</p>
+          <p className="text-xs text-gray-500 mt-1 sm:mt-2">Only future dates are available</p>
         </div>
       </div>
 
       {/* submit + feedback */}
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         <button
           type="submit"
           disabled={submitting}
-          className="w-50 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[#fd8989] disabled:cursor-not-allowed disabled:opacity-70"
+          className="w-full sm:w-50 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[#fd8989] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {submitting ? 'Submitting...' : 'Submit'}
         </button>
         {message && (
-          <p className="text-sm text-green-600">
+          <p className="text-xs sm:text-sm text-green-600">
             {message}
           </p>
         )}
         {error && (
-          <p className="text-sm text-red-600">
+          <p className="text-xs sm:text-sm text-red-600">
             {error}
           </p>
         )}
@@ -211,14 +211,14 @@ const InputField = ({
   value?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => (
-  <div className="space-y-3">
-    <label className="text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">{label}</label>
+  <div className="space-y-2 sm:space-y-3">
+    <label className="text-xs sm:text-sm font-medium uppercase tracking-wide text-[#2b2b2b]">{label}</label>
     <input
       type={type}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="w-full rounded-lg border border-[#d7d7d7] px-4 py-3 text-sm text-[#2f2f2f] focus:border-[#291471] focus:outline-none focus:ring-2 focus:ring-[#4f80eb]"
+      className="w-full rounded-lg border border-[#d7d7d7] px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-[#2f2f2f] focus:border-[#291471] focus:outline-none focus:ring-2 focus:ring-[#4f80eb]"
     />
   </div>
 )

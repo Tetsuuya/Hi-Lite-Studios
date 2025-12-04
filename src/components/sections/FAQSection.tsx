@@ -33,9 +33,9 @@ const FAQSection = () => {
   }, [openItem])
 
   return (
-    <section id="faq-section" className="relative w-full bg-white pt-10 overflow-hidden">
+    <section id="faq-section" className="relative w-full bg-white pt-10 px-4 md:px-0">
       {/* Left Mirrored Graphic */}
-      <div className="absolute left-[-200px] top-1/2 -translate-y-1/2 w-130 opacity-80 pointer-events-none z-0">
+      <div className="absolute left-[-200px] top-1/2 -translate-y-1/2 w-130 opacity-80 pointer-events-none z-0 hidden lg:block">
         <img
           src={StarTL}
           alt="Decorative graphic"
@@ -44,7 +44,7 @@ const FAQSection = () => {
       </div>
 
       {/* Right Mirrored Graphic */}
-      <div className="absolute right-[-200px] top-1/2 -translate-y-1/2 w-130 opacity-80 pointer-events-none z-0">
+      <div className="absolute right-[-200px] top-1/2 -translate-y-1/2 w-130 opacity-80 pointer-events-none z-0 hidden lg:block">
         <img
           src={StarTL}
           alt="Decorative graphic"
@@ -52,7 +52,7 @@ const FAQSection = () => {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-fluid px-8 md:px-12 section-padding">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-fluid px-4 md:px-8 lg:px-12 section-padding">
         {/* Header */}
         <header className="flex flex-col gap-4 items-start">
           <h2 className="title-fluid leading-none font-extrabold bg-linear-to-r from-[#F2322E] to-[#AA1815] bg-clip-text text-transparent text-center">
@@ -61,7 +61,7 @@ const FAQSection = () => {
         </header>
 
         {/* FAQ Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 lg:gap-6 auto-rows-max">
           {previews.map((item) => (
             <FAQCard
               key={item.id}

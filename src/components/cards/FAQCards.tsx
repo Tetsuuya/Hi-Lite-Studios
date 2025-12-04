@@ -51,7 +51,7 @@ const FAQCard = ({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      <div className="w-full px-6 py-3">
+      <div className="w-full px-4 py-2 md:px-6 md:py-3">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             {showToggle && (
@@ -70,7 +70,7 @@ const FAQCard = ({
                 )}
               </button>
             )}
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#1E1E1E]">
+            <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-[#1E1E1E]">
               {item.question}
             </h3>
           </div>
@@ -79,12 +79,12 @@ const FAQCard = ({
 
       {/* Answer area */}
       {!isAdmin && (preview || expanded || isOpen) && (
-        <div className="px-6 py-2 mb-4 bg-[FEF9F8]">
+        <div className="px-4 py-2 md:px-6 md:py-3 bg-[FEF9F8]">
           <p
             className={`${
               preview
-                ? 'text-lg md:text-xl text-[#5C5C5C] leading-relaxed line-clamp-3'
-                : 'text-xl md:text-2xl text-[#5C5C5C] leading-relaxed'
+                ? 'text-xs sm:text-sm md:text-base lg:text-lg text-[#5C5C5C] leading-relaxed line-clamp-3'
+                : 'text-sm sm:text-base md:text-lg text-[#5C5C5C] leading-relaxed'
             }`}
           >
             {item.answer}

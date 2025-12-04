@@ -20,18 +20,18 @@ const Appointment = () => {
         className="pointer-events-none absolute -right-90 -bottom-100 hidden lg:block z-0"
       />
 
-      <main className="relative mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-24 pt-16 z-10">
-        <div className="relative w-full mb-4 mt-10">
+      <main className="relative mx-auto flex w-full max-w-6xl flex-col gap-8 sm:gap-12 md:gap-16 px-4 sm:px-6 pb-12 sm:pb-16 md:pb-24 pt-8 sm:pt-12 md:pt-16 z-10">
+        <div className="relative w-full mb-2 sm:mb-3 md:mb-4 mt-4 sm:mt-6 md:mt-10">
           <img
             src={ServiceStar}
             alt="star-service"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-40"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16 sm:h-28 sm:w-28 md:h-40 md:w-40"
           />
         </div>
 
         {/* hero heading */}
         <div className="space-y-4 text-center lg:text-center">
-          <p className="text-4xl font-medium text-[#F7A800] mb-6">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium text-[#F7A800] mb-3 sm:mb-4 md:mb-6">
             Ready to <span className="italic font-medium text-[#FF8C00]">hi-lite</span> your moment?
           </p>
           <div className="mx-auto h-1 w-full bg-linear-to-r from-transparent via-[#FF8C00]/30 to-transparent lg:mx-0" />

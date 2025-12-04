@@ -1,13 +1,9 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarYellow from '@/assets/images/StarYellow.png';
 import Logo from '@/assets/Logo.svg';
-import ChatbotButton from '@/assets/images/ChatbotButton.png';
-import { Chatbot } from './Chatbot';
 
 const Hero = () => {
   const navigate = useNavigate();
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   return (
     <section className="relative w-full bg-white overflow-hidden pt-4 pb-10">
@@ -35,38 +31,38 @@ const Hero = () => {
 
             {/* Button Cluster */}
             <div className="relative z-10 mx-auto mt-4 h-[280px] w-full max-w-xl">
-            <div className="absolute right-2 top-16 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#291471] to-[#4E26D7] px-6 py-3 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(74,20,140,0.6)] opacity-80" style={{ animation: 'floatY 4s ease-in-out infinite' }}>
+            <div className="absolute right-2 top-16 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#291471] to-[#4E26D7] px-6 py-3 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(74,20,140,0.6)] opacity-80 w-fit" style={{ animation: 'floatY 4s ease-in-out infinite' }}>
               Capture with us
             </div>
 
-            <div className="absolute left-2 bottom-16 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#291471] to-[#4E26D7] px-6 py-3 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(74,20,140,0.6)] opacity-80" style={{ animation: 'floatY 5s ease-in-out infinite', animationDelay: '0.2s' }}>
+            <div className="absolute left-2 bottom-16 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#291471] to-[#4E26D7] px-6 py-3 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(74,20,140,0.6)] opacity-80 w-fit" style={{ animation: 'floatY 5s ease-in-out infinite', animationDelay: '0.2s' }}>
               Own your spotlight
             </div>
             
             <button
               onClick={() => navigate('/appointment')}
-              className="cursor-pointer absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-8 py-5 text-xl font-semibold italic text-white shadow-lg transition hover:shadow-[0_0_25px_rgba(242,50,46,0.7)] hover:scale-[1.02]">
+              className="cursor-pointer absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-8 py-5 text-xl font-semibold italic text-white shadow-lg transition hover:shadow-[0_0_25px_rgba(242,50,46,0.7)] hover:scale-[1.02] w-fit">
               <span className="relative z-10">Book Appointment</span>
               <span className="absolute inset-0 rounded-2xl p-1 pointer-events-none border-sweep-mask"></span>
             </button>
 
-            <div className="absolute left-1/2 top-6 -translate-x-1/2 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-5 py-2.5 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(242,50,46,0.6)] opacity-80" style={{ animation: 'floatY 4.5s ease-in-out infinite', animationDelay: '0.1s' }}>
+            <div className="absolute left-1/2 top-6 -translate-x-1/2 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-5 py-2.5 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(242,50,46,0.6)] opacity-80 w-fit" style={{ animation: 'floatY 4.5s ease-in-out infinite', animationDelay: '0.1s' }}>
               Create moments
             </div>
 
-            <div className="absolute left-40 bottom-0 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-4 py-2.5 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(242,50,46,0.6)] opacity-80" style={{ animation: 'floatY 5.2s ease-in-out infinite', animationDelay: '0.3s' }}>
+            <div className="absolute left-40 bottom-0 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#F2322E] to-[#AA1815] px-4 py-2.5 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(242,50,46,0.6)] opacity-80 w-fit" style={{ animation: 'floatY 5.2s ease-in-out infinite', animationDelay: '0.3s' }}>
               Make your memories
             </div>
 
-            <div className="absolute left-8 top-12 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#FBC93D] to-[#FF8000] px-5 py-2 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(255,193,7,0.6)] opacity-80" style={{ animation: 'floatY 4.8s ease-in-out infinite', animationDelay: '0.15s' }}>
+            <div className="absolute left-8 top-12 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#FBC93D] to-[#FF8000] px-5 py-2 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(255,193,7,0.6)] opacity-80 w-fit" style={{ animation: 'floatY 4.8s ease-in-out infinite', animationDelay: '0.15s' }}>
               Dream with us
             </div>
 
-            <div className="absolute right-8 bottom-10 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#FBC93D] to-[#FF8000] px-4 py-2 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(255,193,7,0.6)] opacity-80" style={{ animation: 'floatY 5.4s ease-in-out infinite', animationDelay: '0.25s' }}>
+            <div className="absolute right-8 bottom-10 rounded-ee-2xl rounded-tl-2xl bg-linear-to-r from-[#FBC93D] to-[#FF8000] px-4 py-2 font-medium italic text-white transition hover:shadow-[0_0_15px_rgba(255,193,7,0.6)] opacity-80 w-fit" style={{ animation: 'floatY 5.4s ease-in-out infinite', animationDelay: '0.25s' }}>
               Frame your story
             </div>
-            </div>
           </div>
+        </div>
 
         {/* Right Side */}
         <div className="relative flex w-full justify-center md:w-1/2">
@@ -78,25 +74,6 @@ const Hero = () => {
             />
           </div>
         </div>
-      </div>
-
-      <div className="fixed bottom-8 right-8 z-50">
-        <button
-          onClick={() => setIsChatbotOpen(!isChatbotOpen)}
-          className="w-20 h-20 rounded-full shadow-lg cursor-pointer transition hover:shadow-[0_0_25px_rgba(0,123,255,0.9)]"
-        >
-          <img
-            src={ChatbotButton}
-            alt="Chatbot Button"
-            className="w-full h-full rounded-full"
-          />
-        </button>
-
-        {isChatbotOpen && (
-          <div className="absolute bottom-24 right-0 w-96">
-            <Chatbot onClose={() => setIsChatbotOpen(false)} />
-          </div>
-        )}
       </div>
     </section>
   );

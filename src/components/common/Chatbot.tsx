@@ -78,31 +78,31 @@ export const Chatbot = ({ onClose }: ChatbotProps) => {
   };
 
   return (
-    <div className="flex flex-col h-[600px] border border-gray-200 rounded-lg bg-white shadow-lg overflow-hidden">
+    <div className="flex flex-col h-[420px] md:h-[600px] border border-gray-200 rounded-lg bg-white shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-gray-200 bg-white flex items-center gap-3">
+      <div className="px-2 py-2 md:px-4 md:py-4 border-b border-gray-200 bg-white flex items-center gap-2 md:gap-3">
         <img 
           src={ChatbotLogoImg} 
           alt="Litebot" 
-          className="h-10 w-10 object-contain"
+          className="h-6 md:h-10 w-6 md:w-10 object-contain shrink-0"
         />
-        <div>
-          <h3 className="m-0 text-base font-bold bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent">Litebot</h3>
-          <p className="m-0 text-xs text-gray-600">Your AI Chatbot Assistant</p>
+        <div className="min-w-0">
+          <h3 className="m-0 text-xs md:text-base font-bold bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text text-transparent truncate">Litebot</h3>
+          <p className="m-0 text-[10px] md:text-xs text-gray-600 truncate">Your AI Chatbot Assistant</p>
         </div>
-        <button onClick={onClose} className="ml-auto text-transparent hover:opacity-80 text-lg font-light leading-none p-1 bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text">×</button>
+        <button onClick={onClose} className="ml-auto text-transparent hover:opacity-80 text-base md:text-xl font-light leading-none p-1 bg-linear-to-r from-[#291471] to-[#4E26D7] bg-clip-text shrink-0">×</button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-2 md:p-6 flex flex-col gap-2 md:gap-4 bg-gray-50">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full gap-6">
+          <div className="flex flex-col items-center justify-center h-full gap-2 md:gap-6">
             <img 
               src={ChatbotLogoImg} 
               alt="Litebot" 
-              className="h-20 w-20 object-contain"
+              className="h-12 md:h-20 w-12 md:w-20 object-contain"
             />
-            <p className="text-center text-gray-500 text-sm font-medium">
+            <p className="text-center text-gray-500 text-[10px] md:text-sm font-medium px-2">
               Ask anything about Hi-Lite Studio!
             </p>
           </div>
@@ -116,7 +116,7 @@ export const Chatbot = ({ onClose }: ChatbotProps) => {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`px-4 py-3 rounded-lg text-sm max-w-xs wrap-break-word whitespace-pre-wrap ${
+                  className={`px-2 py-1 md:px-4 md:py-3 rounded-lg text-[11px] md:text-sm max-w-[80vw] md:max-w-xs wrap-break-word whitespace-pre-wrap ${
                     msg.role === "user"
                       ? "bg-purple-600 text-white rounded-br-none"
                       : "bg-gray-200 text-gray-900 rounded-bl-none"
@@ -149,24 +149,24 @@ export const Chatbot = ({ onClose }: ChatbotProps) => {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="flex gap-3 p-4 border-t border-gray-200 bg-white">
+      <form onSubmit={handleSubmit} className="flex gap-1 md:gap-3 p-2 md:p-4 border-t border-gray-200 bg-white">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your question here..."
           disabled={loading}
-          className="flex-1 px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 placeholder-gray-400"
+          className="flex-1 px-2 md:px-4 py-1 md:py-3 border border-gray-300 rounded-md text-[11px] md:text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 placeholder-gray-400"
         />
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-3 bg-transparent hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center border-none"
+          className="px-2 md:px-4 py-1 md:py-3 bg-transparent hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center border-none shrink-0"
         >
           <img 
             src={SendButtonImg} 
             alt="Send" 
-            className="h-6 w-6 object-contain"
+            className="h-4 md:h-6 w-4 md:w-6 object-contain"
           />
         </button>
       </form>

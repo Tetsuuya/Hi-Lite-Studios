@@ -28,7 +28,7 @@ const WorksSection = () => {
   }
 
   return (
-    <section ref={ref} id="works" className="relative w-full bg-white md:px-8 py-8 overflow-hidden">
+    <section ref={ref} id="works" className="relative w-full bg-white px-4 md:px-8 py-8 overflow-hidden">
       {/* Decorative Top Left */}
       <div className="absolute top-[-150px] left-[-275px] w-[600px] h-[600px] object-contain">
         <img
@@ -54,7 +54,7 @@ const WorksSection = () => {
             <img
               src={RecentHeader}
               alt="Recent Works"
-              className="h-auto w-auto max-w-md mx-auto"
+              className="h-auto w-auto max-w-xs sm:max-w-sm md:max-w-md mx-auto"
             />
           </div>
 
@@ -75,7 +75,7 @@ const WorksSection = () => {
         )}
 
         {/* Image Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-6">
           {showSkeletons ? (
             // Show skeleton loaders while loading
             Array.from({ length: 8 }).map((_, index) => (
@@ -115,4 +115,3 @@ const WorksSection = () => {
 }
 
 export default WorksSection
-

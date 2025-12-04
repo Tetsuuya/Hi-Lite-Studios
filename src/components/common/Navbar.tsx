@@ -62,6 +62,7 @@ const Navbar = () => {
         className={`w-full bg-white px-4 sm:px-8 lg:px-14 transition-all duration-300 ${
           scrolled ? 'py-2' : 'py-4'
         }`}
+        style={{ '--navbar-height': scrolled ? '3.5rem' : '4.5rem' } as React.CSSProperties}
       >
         {/* DESKTOP VIEW */}
         <div className="hidden lg:flex max-w-6xl mx-auto items-center justify-between">
@@ -132,7 +133,7 @@ const Navbar = () => {
 
           {/* MOBILE MENU DROPDOWN */}
           {mobileMenuOpen && (
-            <div className="fixed inset-0 top-16 sm:top-20 lg:hidden bg-white z-40 overflow-y-auto">
+            <div className="fixed inset-0 top-(--navbar-height) lg:hidden bg-white z-40 overflow-y-auto">
               <div className="flex flex-col gap-1 p-4">
                 <button 
                   onClick={() => goHomeAndScroll('works')}
@@ -166,7 +167,7 @@ const Navbar = () => {
                 </button>
                 <button 
                   onClick={() => { navigate('/appointment'); setMobileMenuOpen(false); }}
-                  className="w-full text-left px-4 py-3 rounded hover:bg-red-50 text-red-700 font-medium transition text-lg"
+                  className="w-full text-left px-4 py-3 rounded hover:bg-gray-100 text-[#212121] font-medium transition text-lg"
                 >
                   Capture with Us
                 </button>
