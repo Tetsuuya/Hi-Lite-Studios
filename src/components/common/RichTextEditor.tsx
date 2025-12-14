@@ -28,6 +28,7 @@ const formats = [
 
 function RichTextEditor({ value, onChange, onReady }: RichTextEditorProps) {
   const quillRef = useRef<HTMLDivElement>(null)
+  const quillInstanceRef = useRef<Quill | null>(null)
   const [quill, setQuill] = useState<Quill | null>(null)
 
   const isInitializingRef = useRef(false)
@@ -35,18 +36,70 @@ function RichTextEditor({ value, onChange, onReady }: RichTextEditorProps) {
 
   // Initialize Quill only once
   useEffect(() => {
-    if (quillRef.current && !quill) {
-      const quillInstance = new Quill(quillRef.current, {
-        modules,
-        formats,
-        theme: 'snow',
-      })
-      
-      setQuill(quillInstance)
-      
+    // If we already have a Quill instance, don't initialize again
+    if (quillInstanceRef.current || quill) {
+      return
+    }
+
+    if (!quillRef.current) {
+      return
+    }
+
+    // Check if Quill is already initialized on this element (from a previous render)
+    const existingQuill = (quillRef.current as any).__quill
+    if (existingQuill) {
+      quillInstanceRef.current = existingQuill
+      setQuill(existingQuill)
       if (onReady) {
-        onReady(quillInstance)
+        onReady(existingQuill)
       }
+      return
+    }
+
+    // Check if the element already has Quill content (toolbar + editor)
+    // Quill creates a structure with .ql-toolbar and .ql-container
+    if (quillRef.current.querySelector('.ql-toolbar') || quillRef.current.querySelector('.ql-container')) {
+      // Element already has Quill initialized, find the instance
+      const root = quillRef.current.querySelector('.ql-container')?.parentElement || quillRef.current
+      const existingInstance = (root as any).__quill
+      if (existingInstance) {
+        quillInstanceRef.current = existingInstance
+        setQuill(existingInstance)
+        if (onReady) {
+          onReady(existingInstance)
+        }
+        return
+      }
+      // If we can't find the instance but toolbar exists, clear and reinitialize
+      quillRef.current.innerHTML = ''
+    } else {
+      // Clear any existing content to prevent duplicate toolbars
+      quillRef.current.innerHTML = ''
+    }
+    
+    const quillInstance = new Quill(quillRef.current, {
+      modules,
+      formats,
+      theme: 'snow',
+    })
+    
+    // Store reference to prevent duplicate initialization
+    quillInstanceRef.current = quillInstance
+    ;(quillRef.current as any).__quill = quillInstance
+    
+    setQuill(quillInstance)
+    
+    if (onReady) {
+      onReady(quillInstance)
+    }
+
+    // Cleanup function to prevent memory leaks
+    return () => {
+      if (quillRef.current) {
+        // Clear the reference but keep the Quill instance for potential reuse
+        delete (quillRef.current as any).__quill
+      }
+      quillInstanceRef.current = null
     }
   }, [quill, onReady])
 
