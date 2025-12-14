@@ -267,8 +267,9 @@ export default function WorksCollection() {
         )
         setSuccess(`Work ${status === 'draft' ? 'saved as draft' : 'published'}!`)
         setTimeout(() => setSuccess(null), 3000)
-        resetForm()
+        // Switch to list mode first to unmount editor, then reset form to prevent flicker
         setMode('list')
+        resetForm()
       } else if (mode === 'create') {
         const newWork = await createWork(workData)
         // ✅ Add to local state instead of re-fetching
@@ -281,8 +282,9 @@ export default function WorksCollection() {
 
         setSuccess(`Work ${status === 'draft' ? 'saved as draft' : 'published'}!`)
         setTimeout(() => setSuccess(null), 3000)
-        resetForm()
+        // Switch to list mode first to unmount editor, then reset form to prevent flicker
         setMode('list')
+        resetForm()
       }
     } catch (err) {
       console.error('[WorksCollection] Save error:', err)
