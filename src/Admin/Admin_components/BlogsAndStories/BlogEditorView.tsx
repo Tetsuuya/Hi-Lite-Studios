@@ -57,6 +57,8 @@ export default memo(function BlogEditorView({
 }: BlogEditorViewProps) {
   return (
     <div className="mt-6 space-y-6">
+      {/* Hide duplicate Quill toolbars, only show the first */}
+      <style>{`.ql-toolbar.ql-snow:not(:first-of-type){display:none!important}`}</style>
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">

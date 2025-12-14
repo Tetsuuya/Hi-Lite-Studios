@@ -2,6 +2,7 @@ import type { ChangeEvent } from 'react'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { Calendar } from '@/components/ui/calendar'
 import { ImageUploadField, MediaGallery, MediaUploadField } from '../../shared'
+import { reorderWorkMedia } from '@/supabase/supabase_services/Content_Management/WorksCollection_Service/WorksCollection'
 import { WORK_LABEL_OPTIONS } from '../../../../utils'
 import { COLORS } from '../constants'
 import StarBlack from '@/assets/images/StarBlack.png'
@@ -35,6 +36,7 @@ interface WorksEditorViewProps {
   deleting?: boolean
   onConfirmDelete?: () => Promise<void> | void
   onCancelDelete?: () => void
+  workId?: string
 }
 
 export default function WorksEditorView({
@@ -58,6 +60,7 @@ export default function WorksEditorView({
   deleting = false,
   onConfirmDelete,
   onCancelDelete,
+  workId,
 }: WorksEditorViewProps) {
   // Ensure Calendar receives a Date object when `form.date` is a stored string
   const selectedDate = (() => {
@@ -242,7 +245,29 @@ export default function WorksEditorView({
             onUpload={onMediaUpload}
             buttonText={uploadingMedia ? 'Uploading...' : 'Add Media'}
           />
-          <div />
+          <div className="flex items-center gap-2">
+            {((form as any).media_edit_mode !== true) ? (
+              <button
+                type="button"
+                onClick={() => onChangeField('media_edit_mode', true)}
+                className="rounded-full px-5 py-2 text-xs font-semibold tracking-wide text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105"
+                style={{ backgroundColor: COLORS.PRIMARY_RED }}
+                title="Reorder Images"
+              >
+                Reorder Images
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onChangeField('media_edit_mode', false)}
+                className="rounded-full px-5 py-2 text-xs font-semibold tracking-wide text-white shadow-sm transition-all duration-200 hover:shadow-lg hover:scale-105"
+                style={{ backgroundColor: '#291471' }}
+                title="Done"
+              >
+                Done
+              </button>
+            )}
+          </div>
         </div>
 
         <MediaGallery
@@ -252,6 +277,16 @@ export default function WorksEditorView({
           ]}
           uploading={uploadingMedia}
           onDelete={onDeleteMedia}
+          onReorder={async (mediaIds) => {
+            // Persist order for saved media items only
+            const persistedIds = new Set(selectedWorkMedia.map(m => m.id))
+            const targetWorkId = workId || selectedWorkMedia[0]?.work_id
+            if (targetWorkId) {
+              await reorderWorkMedia(targetWorkId, mediaIds.filter(id => persistedIds.has(id)))
+            }
+            // Optionally, you could update local arrays order here if needed by parent
+          }}
+          editMode={(form as any).media_edit_mode === true}
           emptyMessage="No media added yet. Click 'Add Media' to upload images."
         />
       </div>
