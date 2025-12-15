@@ -28,6 +28,7 @@ interface WorksEditorViewProps {
   onMainImageUpload: (e: ChangeEvent<HTMLInputElement>) => Promise<void> | void
   onMediaUpload: (e: ChangeEvent<HTMLInputElement>) => Promise<void> | void
   onDeleteMedia: (mediaId: string) => Promise<void> | void
+  onReloadMedia?: () => Promise<void> | void
   onSave: () => Promise<void> | void
   onSaveDraft?: () => Promise<void> | void
   onCancel: () => void
@@ -52,6 +53,7 @@ export default function WorksEditorView({
   onMainImageUpload,
   onMediaUpload,
   onDeleteMedia,
+  onReloadMedia,
   onSave,
   onSaveDraft,
   onCancel,
@@ -278,13 +280,31 @@ export default function WorksEditorView({
           uploading={uploadingMedia}
           onDelete={onDeleteMedia}
           onReorder={async (mediaIds) => {
-            // Persist order for saved media items only
-            const persistedIds = new Set(selectedWorkMedia.map(m => m.id))
-            const targetWorkId = workId || selectedWorkMedia[0]?.work_id
-            if (targetWorkId) {
-              await reorderWorkMedia(targetWorkId, mediaIds.filter(id => persistedIds.has(id)))
+            try {
+              // Separate persisted media IDs from pending (temp) IDs
+              const persistedIds = new Set(selectedWorkMedia.map(m => m.id))
+              const persistedMediaIds = mediaIds.filter(id => persistedIds.has(id))
+              
+              const targetWorkId = workId || selectedWorkMedia[0]?.work_id
+              
+              // Reorder persisted media in database
+              if (targetWorkId && persistedMediaIds.length > 0) {
+                await reorderWorkMedia(targetWorkId, persistedMediaIds)
+                
+                // Wait a moment to ensure database update is complete
+                await new Promise(resolve => setTimeout(resolve, 100))
+                
+                // Reload media to get updated order from database
+                if (onReloadMedia) {
+                  await onReloadMedia()
+                }
+              }
+              
+              // Note: Pending media order is handled by the parent component
+            } catch (err) {
+              console.error('[WorksEditorView] Reorder error:', err)
+              // Error will be shown by parent component if available
             }
-            // Optionally, you could update local arrays order here if needed by parent
           }}
           editMode={(form as any).media_edit_mode === true}
           onEditModeChange={(editing) => onChangeField('media_edit_mode', editing)}

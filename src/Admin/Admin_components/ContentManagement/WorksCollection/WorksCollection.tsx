@@ -332,6 +332,7 @@ export default function WorksCollection() {
           onMainImageUpload={handleMainImageUpload}
           onMediaUpload={handleMediaUpload}
           onDeleteMedia={handleDeleteMedia}
+          onReloadMedia={selectedWorkId ? () => loadWorkMedia(selectedWorkId) : undefined}
           onSave={handleSave}
           onSaveDraft={handleSaveDraft}
           onCancel={handleCancelEdit}

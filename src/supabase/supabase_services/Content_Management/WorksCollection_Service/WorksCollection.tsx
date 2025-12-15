@@ -222,20 +222,45 @@ export async function deleteWorkMedia(mediaId: string) {
 }
 
 export async function reorderWorkMedia(workId: string, mediaIds: string[]) {
-  // Update display_order for all media items
-  const updates = mediaIds.map((id, index) => ({
-    id,
-    display_order: index,
-  }))
-
-  for (const update of updates) {
+  if (!mediaIds || mediaIds.length === 0) {
+    return
+  }
+  
+  // Strategy: Use a large offset for temporary values to avoid conflicts
+  // We'll use values starting from -10000 to ensure no conflicts with existing orders
+  const TEMP_OFFSET = -10000
+  
+  // Step 1: Update all items to temporary values with large negative offset
+  for (let i = 0; i < mediaIds.length; i++) {
+    const id = mediaIds[i]
     const { error } = await supabase
       .from(MEDIA_TABLE_NAME)
-      .update({ display_order: update.display_order })
-      .eq('id', update.id)
+      .update({ display_order: TEMP_OFFSET - i }) // Use large negative offset
+      .eq('id', id)
       .eq('work_id', workId)
 
-    if (error) throw error
+    if (error) {
+      console.error('[reorderWorkMedia] Error updating to temporary value:', id, error)
+      throw error
+    }
+  }
+  
+  // Small delay to ensure all temporary updates are committed
+  await new Promise(resolve => setTimeout(resolve, 50))
+  
+  // Step 2: Update all items to final values
+  for (let i = 0; i < mediaIds.length; i++) {
+    const id = mediaIds[i]
+    const { error } = await supabase
+      .from(MEDIA_TABLE_NAME)
+      .update({ display_order: i })
+      .eq('id', id)
+      .eq('work_id', workId)
+
+    if (error) {
+      console.error('[reorderWorkMedia] Error updating to final value:', id, error)
+      throw error
+    }
   }
 }
 

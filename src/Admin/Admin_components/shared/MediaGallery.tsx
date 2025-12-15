@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 export interface MediaItem {
   id: string
@@ -37,6 +37,47 @@ export default function MediaGallery({
   const [order, setOrder] = useState(() => media.map(m => m.id))
   const holdTimer = useRef<number | null>(null)
   const dragId = useRef<string | null>(null)
+  const prevMediaRef = useRef<string>('')
+  const isSavingRef = useRef<boolean>(false)
+  const saveDebounceTimer = useRef<number | null>(null)
+
+  // Reset order when media changes (e.g., after reload from database)
+  // This ensures the order matches the database order after reordering
+  // BUT: Don't reset if we're currently in edit mode OR if we just saved
+  useEffect(() => {
+    if (editMode || isSavingRef.current) {
+      // Don't reset order while user is editing or while saving
+      return
+    }
+    
+    const currentMediaIds = media.map(m => m.id).join(',')
+    const currentMediaIdsArray = media.map(m => m.id)
+    
+    // Only update if the media IDs string changed (different items or different order)
+    if (prevMediaRef.current !== currentMediaIds) {
+      // Check if it's the same IDs (just reordered) or different IDs (items added/removed)
+      const mediaIdsSet = new Set(currentMediaIdsArray)
+      const orderIdsSet = new Set(order)
+      const hasSameIds = mediaIdsSet.size === orderIdsSet.size && 
+                         [...mediaIdsSet].every(id => orderIdsSet.has(id))
+      
+      if (hasSameIds && prevMediaRef.current !== '') {
+        // Same IDs - this is likely a reload after save
+        // IMPORTANT: Don't reset the order if IDs are the same - preserve the order state
+        // The order state already has the correct order (including pending items in their positions)
+        // The media array might be reconstructed as [...pendingMedia, ...selectedWorkMedia]
+        // which doesn't match the saved order, so we should preserve the order state
+        // DON'T update order - preserve the current order state which has the correct order
+        // Just update the ref to prevent repeated checks
+        prevMediaRef.current = currentMediaIds
+        return // Exit early to prevent any order update
+      } else {
+        // Different IDs - items were added/removed, or initial load
+        setOrder(currentMediaIdsArray)
+        prevMediaRef.current = currentMediaIds
+      }
+    }
+  }, [media, editMode]) // Removed 'order' from dependencies to avoid infinite loop
 
   // Keep local order in sync when media list changes (e.g., after upload/delete)
   const orderedMedia = useMemo(() => {
@@ -59,12 +100,66 @@ export default function MediaGallery({
     }
   }, [])
 
-  // Notify parent when edit mode changes (e.g., via external toggle or programmatic changes)
+  // Save order with debouncing - waits until user stops dragging
+  const debouncedSave = useCallback(() => {
+    if (saveDebounceTimer.current) {
+      window.clearTimeout(saveDebounceTimer.current)
+    }
+    
+    saveDebounceTimer.current = window.setTimeout(async () => {
+      if (onReorder && order.length > 0 && editMode) {
+        isSavingRef.current = true // Prevent order reset during save
+        try {
+          await onReorder([...order]) // Create a copy to ensure we have the latest
+          // Wait for reload to complete before allowing order reset
+          setTimeout(() => {
+            isSavingRef.current = false
+          }, 500)
+        } catch (err) {
+          isSavingRef.current = false
+          console.error('[MediaGallery] Error saving order:', err)
+        }
+      }
+    }, 800) // Wait 800ms after last drag before saving
+  }, [onReorder, order, editMode])
+
+  // Notify parent when edit mode changes and save order when exiting edit mode
   const prevEdit = useRef<boolean>(editMode)
-  if (prevEdit.current !== editMode) {
-    prevEdit.current = editMode
-    if (onEditModeChange) onEditModeChange(editMode)
-  }
+  useEffect(() => {
+    const wasEditing = prevEdit.current
+    const isEditing = editMode
+    
+    if (wasEditing !== isEditing) {
+      prevEdit.current = isEditing
+      
+      if (onEditModeChange) {
+        onEditModeChange(isEditing)
+      }
+      
+      // When exiting edit mode (clicking "Done"), save immediately and clear debounce
+      if (wasEditing && !isEditing && onReorder && order.length > 0) {
+        // Clear any pending debounced save
+        if (saveDebounceTimer.current) {
+          window.clearTimeout(saveDebounceTimer.current)
+          saveDebounceTimer.current = null
+        }
+        
+        isSavingRef.current = true // Prevent order reset during save
+        setTimeout(async () => {
+          try {
+            await onReorder([...order]) // Create a copy to ensure we have the latest
+            // Wait for reload to complete before allowing order reset
+            setTimeout(() => {
+              isSavingRef.current = false
+            }, 500)
+          } catch (err) {
+            isSavingRef.current = false
+            console.error('[MediaGallery] Error saving order:', err)
+          }
+        }, 0)
+      }
+    }
+  }, [editMode, onEditModeChange, onReorder, order])
 
   const onDragStart = (id: string) => {
     dragId.current = id
@@ -83,9 +178,10 @@ export default function MediaGallery({
     setOrder(newOrder)
   }
 
-  const onDragEnd = async () => {
+  const onDragEnd = () => {
     dragId.current = null
-    if (onReorder) await onReorder(order)
+    // Trigger debounced save - will save after user stops dragging for 800ms
+    debouncedSave()
   }
 
   const handleDelete = async (mediaId: string) => {
