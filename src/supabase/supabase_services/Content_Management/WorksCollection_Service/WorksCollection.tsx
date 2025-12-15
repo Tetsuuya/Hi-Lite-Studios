@@ -89,21 +89,34 @@ export async function fetchWorkById(id: string) {
 }
 
 export async function fetchWorkWithMedia(id: string) {
-  const { data, error } = await supabase
+  // Fetch work first
+  const { data: workData, error: workError } = await supabase
     .from(TABLE_NAME)
-    .select(`
-      *,
-      media:${MEDIA_TABLE_NAME}(*)
-    `)
+    .select('*')
     .eq('id', id)
     .single()
 
-  if (error) throw error
+  if (workError) throw workError
 
-  const work = data as Work & { media: WorkMedia[] }
+  // Fetch media separately (more reliable with RLS)
+  const { data: mediaData, error: mediaError } = await supabase
+    .from(MEDIA_TABLE_NAME)
+    .select('*')
+    .eq('work_id', id)
+    .order('display_order', { ascending: true })
+
+  // Don't throw on media error, just log it and use empty array
+  // This allows the work to load even if media query fails
+  if (mediaError) {
+    console.warn('Error fetching work media:', mediaError)
+  }
+
+  const work = workData as Work
+  const media = (mediaData || []) as WorkMedia[]
+
   return {
     ...work,
-    media: (work.media || []).sort((a, b) => a.display_order - b.display_order),
+    media: media.sort((a, b) => a.display_order - b.display_order),
   } as WorkWithMedia
 }
 
