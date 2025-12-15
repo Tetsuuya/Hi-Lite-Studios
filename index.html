@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/StarIcon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" id="viewport-meta" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -17,6 +17,34 @@
         const url = window.location.href.split('?')[0];
         window.history.replaceState({}, document.title, url);
       }
+
+      // Prevent zoom out on small to medium screens (mobile and tablet)
+      function updateViewport() {
+        const viewportMeta = document.getElementById('viewport-meta');
+        if (viewportMeta) {
+          const width = window.innerWidth;
+          // Apply zoom lock on screens smaller than 1024px (tablets and below)
+          if (width < 1024) {
+            viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0');
+          } else {
+            viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+          }
+        }
+      }
+
+      // Update on load and resize
+      updateViewport();
+      window.addEventListener('resize', updateViewport);
+      
+      // Also prevent zoom out via double-tap gesture on mobile
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function(event) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300 && window.innerWidth < 1024) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
