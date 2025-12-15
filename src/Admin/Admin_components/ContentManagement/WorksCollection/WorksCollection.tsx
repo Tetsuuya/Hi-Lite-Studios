@@ -51,12 +51,35 @@ export default function WorksCollection() {
   // Don't use separate effect for selectedWorkId - handle in handler instead
   // This was causing double fetching on edit
 
+  // Sort works by date (newest first, nulls last), then by created_at (newest first)
+  const sortWorksByDate = (worksToSort: Work[]): Work[] => {
+    return [...worksToSort].sort((a, b) => {
+      // First, sort by date (descending, nulls last)
+      if (a.date && b.date) {
+        const dateA = new Date(a.date).getTime()
+        const dateB = new Date(b.date).getTime()
+        if (dateB !== dateA) {
+          return dateB - dateA // Newest first
+        }
+      } else if (a.date && !b.date) {
+        return -1 // a has date, b doesn't - a comes first
+      } else if (!a.date && b.date) {
+        return 1 // b has date, a doesn't - b comes first
+      }
+      // If both are null or dates are equal, sort by created_at (descending, newest first)
+      const createdA = new Date(a.created_at).getTime()
+      const createdB = new Date(b.created_at).getTime()
+      return createdB - createdA
+    })
+  }
+
   const loadWorks = async () => {
     setLoading(true)
     setError(null)
     try {
       const data = await fetchAllWorks()
-      setWorks(data)
+      // Database already sorts, but ensure local state is sorted
+      setWorks(sortWorksByDate(data))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load works')
     } finally {
@@ -261,10 +284,11 @@ export default function WorksCollection() {
 
       if (mode === 'edit' && selectedWork) {
         const updated = await updateWork(selectedWork.id, workData)
-        // ✅ Update local state instead of re-fetching
-        setWorks((prev) =>
-          prev.map((w) => (w.id === updated.id ? updated : w))
-        )
+        // ✅ Update local state and re-sort by date (newest first)
+        setWorks((prev) => {
+          const updatedWorks = prev.map((w) => (w.id === updated.id ? updated : w))
+          return sortWorksByDate(updatedWorks)
+        })
         setSuccess(`Work ${status === 'draft' ? 'saved as draft' : 'published'}!`)
         setTimeout(() => setSuccess(null), 3000)
         // Switch to list mode first to unmount editor, then reset form to prevent flicker
@@ -272,8 +296,8 @@ export default function WorksCollection() {
         resetForm()
       } else if (mode === 'create') {
         const newWork = await createWork(workData)
-        // ✅ Add to local state instead of re-fetching
-        setWorks((prev) => [newWork, ...prev])
+        // ✅ Add to local state and sort by date (newest first)
+        setWorks((prev) => sortWorksByDate([...prev, newWork]))
 
         // Add all pending media items to the database
         for (const item of pendingMedia) {
